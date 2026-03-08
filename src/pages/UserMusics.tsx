@@ -8,11 +8,9 @@ import {
   IonFabButton,
   IonAlert,
 } from '@ionic/react';
-import { add, volumeHigh } from 'ionicons/icons';
-import localforage from 'localforage';
+import { add} from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
 import { UserMusic, MusicPlayerHandle } from '../types/music.types';
-import ModelSearch from '../components/ModelsProps/ModelSearch';
 import MusicPlayButton from '../components/MusicsProps/MusicPlayButton';
 import MusicSpectrum from '../components/MusicsProps/MusicSpectrum';
 import MusicPrevious from '../components/MusicsProps/MusicPrevious';
@@ -397,8 +395,6 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
 
     return (
       <IonContent fullscreen>
-        <ModelSearch onSearch={handleSearch} />
-
         <div
           className={`music-container ${isDragging ? 'grabbing' : ''}`}
           ref={containerRef}
