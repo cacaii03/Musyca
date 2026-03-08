@@ -7,6 +7,10 @@ import {
   IonFab,
   IonFabButton,
   IonAlert,
+  IonPage,        
+  IonHeader,     
+  IonToolbar,     
+  IonTitle,      
 } from '@ionic/react';
 import { add} from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
@@ -394,140 +398,162 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     };
 
     return (
-      <IonContent fullscreen>
-        <div
-          className={`music-container ${isDragging ? 'grabbing' : ''}`}
-          ref={containerRef}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleMouseUp}
-        >
-          <div className="music-scroll-row">
-            <div style={{ minWidth: 'calc(50vw - 40%)' }} />
+      <IonPage> 
+        <IonHeader> 
+          <IonToolbar>
+            <IonTitle>Music Player</IonTitle>
+          </IonToolbar>
+        </IonHeader>
+        
+        <IonContent fullscreen>
+          <div
+            className={`music-container ${isDragging ? 'grabbing' : ''}`}
+            ref={containerRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleMouseUp}
+          >
+            <div className="music-scroll-row">
+              <div style={{ minWidth: 'calc(50vw - 40%)' }} />
 
-            {filteredItems.map((item) => (
-              <div key={item.id} className="music-col">
-                <MusicItem
-                  music={item}
-                  isCentered={centeredCard === item.id}
-                  isPlaying={currentPlayingId === item.id && isPlaying}
-                  onCardClick={() => handleCardClick(item.id)}
-                  onPlayPause={() => handlePlayPause(item.id)}
-                  onDelete={() => handleDeleteMusic(item.id)}
-                  onEdit={() => {
-                    // Implement edit functionality if needed
-                    console.log('Edit:', item.id);
-                  }}
-                />
-              </div>
-            ))}
+              {filteredItems.map((item) => (
+                <div key={item.id} className="music-col">
+                  <MusicItem
+                    music={item}
+                    isCentered={centeredCard === item.id}
+                    isPlaying={currentPlayingId === item.id && isPlaying}
+                    onCardClick={() => handleCardClick(item.id)}
+                    onPlayPause={() => handlePlayPause(item.id)}
+                    onDelete={() => handleDeleteMusic(item.id)}
+                    onEdit={() => {
+                      console.log('Edit:', item.id);
+                    }}
+                  />
+                </div>
+              ))}
 
-            <div style={{ minWidth: 'calc(50vw - 40%)' }} />
-          </div>
-        </div>
-
-        {/* Player Card */}
-        {filteredItems.length > 0 && (
-          <IonCard className="music-player-card">
-            <div className="ion-padding">
-              <div style={{ marginBottom: '10px' }}>
-                <SpectrumBars
-                  barCount={30}
-                  isPlaying={isPlaying}
-                  audioElement={
-                    currentPlayingId ? audioRefs.current.get(currentPlayingId) || null : null
-                  }
-                />
-              </div>
-
-              <div style={{ marginTop: '-20px' }}>
-                <MusicSpectrum
-                  progress={currentProgress}
-                  onSeek={(newProgress) => {
-                    const audio = currentPlayingId ? audioRefs.current.get(currentPlayingId) : null;
-                    if (audio) {
-                      audio.currentTime = (newProgress / 100) * audio.duration;
-                    }
-                  }}
-                  disabled={!currentPlayingId}
-                />
-              </div>
-
-              <div className="player-controls">
-                <MusicShuffleButton
-                  onRestart={handleRestart}
-                  isShuffle={isShuffle}
-                  onToggleShuffle={() => setIsShuffle(prev => !prev)}
-                  disabled={isRepeat}
-                />
-
-                <MusicPrevious
-                  onClick={handlePrevious}
-                  disabled={!centeredCard || filteredItems.findIndex(item => item.id === centeredCard) <= 0}
-                />
-
-                <MusicPlayButton
-                  isPlaying={currentPlayingId !== null && isPlaying}
-                  onPlayPause={() => centeredCard && handlePlayPause(centeredCard)}
-                  disabled={!centeredCard}
-                />
-
-                <MusicNext
-                  onClick={handleNext}
-                  disabled={!centeredCard || filteredItems.findIndex(item => item.id === centeredCard) >= filteredItems.length - 1}
-                />
-
-                <MusicRepeatToggle
-                  isRepeat={isRepeat}
-                  onToggle={() => {
-                    setIsRepeat(!isRepeat);
-                    if (!isRepeat) {
-                      setIsShuffle(false);
-                    }
-                  }}
-                />
-              </div>
+              <div style={{ minWidth: 'calc(50vw - 40%)' }} />
             </div>
-          </IonCard>
-        )}
+          </div>
 
-        {/* FAB Button to Add Music */}
-        <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton onClick={() => setShowAddModal(true)}>
-            <IonIcon icon={add} />
-          </IonFabButton>
-        </IonFab>
+          {/* Player Card */}
+          {filteredItems.length > 0 && (
+            <IonCard className="music-player-card">
+              <div className="ion-padding">
+                <div style={{ marginBottom: '10px' }}>
+                  <SpectrumBars
+                    barCount={30}
+                    isPlaying={isPlaying}
+                    audioElement={
+                      currentPlayingId ? audioRefs.current.get(currentPlayingId) || null : null
+                    }
+                  />
+                </div>
 
-        {/* Add Music Modal */}
-        <AddMusicModal
-          isOpen={showAddModal}
-          onClose={() => setShowAddModal(false)}
-          onSave={handleSaveMusic}
-        />
+                <div style={{ marginTop: '-20px' }}>
+                  <MusicSpectrum
+                    progress={currentProgress}
+                    onSeek={(newProgress) => {
+                      const audio = currentPlayingId ? audioRefs.current.get(currentPlayingId) : null;
+                      if (audio) {
+                        audio.currentTime = (newProgress / 100) * audio.duration;
+                      }
+                    }}
+                    disabled={!currentPlayingId}
+                  />
+                </div>
 
-        {/* Delete Confirmation Alert */}
-        <IonAlert
-          isOpen={showDeleteAlert}
-          onDidDismiss={() => setShowDeleteAlert(false)}
-          header="Confirm Delete"
-          message="Are you sure you want to delete this song?"
-          buttons={[
-            {
-              text: 'Cancel',
-              role: 'cancel',
-            },
-            {
-              text: 'Delete',
-              role: 'destructive',
-              handler: confirmDelete,
-            },
-          ]}
-        />
-      </IonContent>
+                <div className="player-controls">
+                  <MusicShuffleButton
+                    onRestart={handleRestart}
+                    isShuffle={isShuffle}
+                    onToggleShuffle={() => setIsShuffle(prev => !prev)}
+                    disabled={isRepeat}
+                  />
+
+                  <MusicPrevious
+                    onClick={handlePrevious}
+                    disabled={!centeredCard || filteredItems.findIndex(item => item.id === centeredCard) <= 0}
+                  />
+
+                  <MusicPlayButton
+                    isPlaying={currentPlayingId !== null && isPlaying}
+                    onPlayPause={() => centeredCard && handlePlayPause(centeredCard)}
+                    disabled={!centeredCard}
+                  />
+
+                  <MusicNext
+                    onClick={handleNext}
+                    disabled={!centeredCard || filteredItems.findIndex(item => item.id === centeredCard) >= filteredItems.length - 1}
+                  />
+
+                  <MusicRepeatToggle
+                    isRepeat={isRepeat}
+                    onToggle={() => {
+                      setIsRepeat(!isRepeat);
+                      if (!isRepeat) {
+                        setIsShuffle(false);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </IonCard>
+          )}
+
+          {/* Empty State - when no music */}
+          {filteredItems.length === 0 && (
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              height: '200px',
+              textAlign: 'center',
+              padding: '20px'
+            }}>
+              <p>No music found. Click the + button to add your first song!</p>
+            </div>
+          )}
+
+          {/* FAB Button to Add Music */}
+          <IonFab vertical="bottom" horizontal="end" slot="fixed">
+            <IonFabButton onClick={() => setShowAddModal(true)}>
+              <IonIcon icon={add} />
+            </IonFabButton>
+          </IonFab>
+
+          {/* Add Music Modal */}
+          <AddMusicModal
+            isOpen={showAddModal}
+            onClose={() => setShowAddModal(false)}
+            onSave={handleSaveMusic}
+          />
+
+          {/* Delete Confirmation Alert */}
+          <IonAlert
+            isOpen={showDeleteAlert}
+            onDidDismiss={() => setShowDeleteAlert(false)}
+            header="Confirm Delete"
+            message="Are you sure you want to delete this song?"
+            buttons={[
+              {
+                text: 'Cancel',
+                role: 'cancel',
+              },
+              {
+                text: 'Delete',
+                role: 'destructive',
+                handler: confirmDelete,
+              },
+            ]}
+          />
+        </IonContent>
+      </IonPage>
     );
   }
 );
