@@ -401,7 +401,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
       <IonPage> 
         <IonHeader> 
           <IonToolbar>
-            <IonTitle>Music Player</IonTitle>
+            <IonTitle>Musyca</IonTitle>
           </IonToolbar>
         </IonHeader>
         
@@ -439,8 +439,6 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
               <div style={{ minWidth: 'calc(50vw - 40%)' }} />
             </div>
           </div>
-
-          {/* Player Card */}
           {filteredItems.length > 0 && (
             <IonCard className="music-player-card">
               <div className="ion-padding">
@@ -504,8 +502,6 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
               </div>
             </IonCard>
           )}
-
-          {/* Empty State - when no music */}
           {filteredItems.length === 0 && (
             <div style={{ 
               display: 'flex', 
@@ -520,7 +516,6 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
             </div>
           )}
 
-          {/* FAB Button to Add Music */}
           <IonFab vertical="bottom" horizontal="end" slot="fixed">
             <IonFabButton onClick={() => setShowAddModal(true)}>
               <IonIcon icon={add} />
