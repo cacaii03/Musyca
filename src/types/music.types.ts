@@ -4,6 +4,7 @@ export interface UserMusic {
   artist?: string;
   audioFile: File | null;
   audioData?: string; 
+  imageFile?: File | null;
   imageData?: string; 
   duration?: number;
   dateAdded: number;

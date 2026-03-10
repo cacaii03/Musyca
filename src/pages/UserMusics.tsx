@@ -30,6 +30,16 @@ interface UserMusicsProps {
   onPlayRequest?: () => void;
 }
 
+// Helper function to convert File to base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = error => reject(error);
+  });
+};
+
 const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
   ({ isMicActive, onPlayStateChange, onPlayRequest }, ref) => {
     const [musicItems, setMusicItems] = useState<UserMusic[]>([]);
@@ -39,7 +49,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     const [editingMusic, setEditingMusic] = useState<UserMusic | null>(null);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-    
+
     // Player state
     const [centeredCard, setCenteredCard] = useState<string | null>(null);
     const [currentPlayingId, setCurrentPlayingId] = useState<string | null>(null);
@@ -66,7 +76,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
       const music = await MusicStorage.getAllMusic();
       setMusicItems(music);
       setFilteredItems(music);
-      
+
       // Set first card as centered if available
       if (music.length > 0 && !centeredCard) {
         setCenteredCard(music[0].id);
@@ -213,41 +223,18 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
         setShowEditModal(true);
       }
     };
-
-    const handleUpdateMusic = async (id: string, title: string, artist: string) => {
+    const handleUpdateMusic = async (id: string, title: string, artist: string, imageFile?: File | null) => {
       try {
-        const currentMusic = musicItems.find(m => m.id === id);
-        if (!currentMusic) return;
+        // Use the dedicated method for updating with image
+        await MusicStorage.updateMusicWithImage(id, title, artist, imageFile);
 
-        const updatedMusic: UserMusic = {
-          ...currentMusic,
-          title,
-          artist: artist || undefined,
-        };
+        // Reload music to get updated data
+        await loadMusic();
 
-        // Update in storage
-        await MusicStorage.updateMusic(id, updatedMusic);
-        
-        // Update local state
-        const updatedItems = musicItems.map(m => 
-          m.id === id ? updatedMusic : m
-        );
-        setMusicItems(updatedItems);
-        
-        // Update filtered items based on current search
-        if (searchText) {
-          const filtered = updatedItems.filter(item =>
-            item.title.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.artist?.toLowerCase().includes(searchText.toLowerCase())
-          );
-          setFilteredItems(filtered);
-        } else {
-          setFilteredItems(updatedItems);
-        }
-        
-        console.log('Music updated successfully:', updatedMusic);
+        console.log('Music updated successfully');
       } catch (error) {
         console.error('Error updating music:', error);
+        throw error;
       }
     };
 
@@ -349,7 +336,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
 
     const handleSearch = (query: string) => {
       setSearchText(query);
-      
+
       if (!query.trim()) {
         setFilteredItems(musicItems);
       } else {
@@ -358,11 +345,11 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
           item.artist?.toLowerCase().includes(query.toLowerCase())
         );
         setFilteredItems(filtered);
-        
+
         // If there's a match and no centered card or the centered card is not in filtered results
         if (filtered.length > 0) {
           const centeredStillExists = centeredCard && filtered.some(item => item.id === centeredCard);
-          
+
           if (!centeredStillExists) {
             // Center the first result
             handleCardClick(filtered[0].id);
@@ -453,14 +440,14 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     };
 
     return (
-      <IonPage> 
-        <SearchHeader 
-          title="Musyca" 
-          searchText={searchText} 
+      <IonPage>
+        <SearchHeader
+          title="Musyca"
+          searchText={searchText}
           onSearch={handleSearch}
           resultCount={filteredItems.length}
         />
-        
+
         <IonContent fullscreen>
           <div
             className={`music-container ${isDragging ? 'grabbing' : ''}`}
@@ -559,11 +546,11 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
           )}
 
           {filteredItems.length === 0 && (
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
               height: '200px',
               textAlign: 'center',
               padding: '20px'
