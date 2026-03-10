@@ -1,18 +1,14 @@
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import {
   IonContent,
-  IonButton,
   IonCard,
   IonIcon,
   IonFab,
   IonFabButton,
   IonAlert,
-  IonPage,        
-  IonHeader,     
-  IonToolbar,     
-  IonTitle,      
+  IonPage,
 } from '@ionic/react';
-import { add} from 'ionicons/icons';
+import { add } from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
 import { UserMusic, MusicPlayerHandle } from '../types/music.types';
 import MusicPlayButton from '../components/MusicsProps/MusicPlayButton';
@@ -23,7 +19,9 @@ import MusicRepeatToggle from '../components/MusicsProps/MusicRepeatToggle';
 import SpectrumBars from '../components/MusicsProps/SpectrumBars';
 import MusicShuffleButton from '../components/MusicsProps/MusicShuffleButton';
 import AddMusicModal from '../components/MusicsProps/AddMusicModal';
+import EditMusicModal from '../components/MusicsProps/EditMusicModal';
 import MusicItem from '../components/MusicsProps/MusicItem';
+import SearchHeader from '../components/MusicsProps/SearchHeader';
 import './UserMusics.css';
 
 interface UserMusicsProps {
@@ -37,6 +35,8 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     const [musicItems, setMusicItems] = useState<UserMusic[]>([]);
     const [filteredItems, setFilteredItems] = useState<UserMusic[]>([]);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editingMusic, setEditingMusic] = useState<UserMusic | null>(null);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
     
@@ -47,8 +47,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     const [currentProgress, setCurrentProgress] = useState(0);
     const [isRepeat, setIsRepeat] = useState(false);
     const [isShuffle, setIsShuffle] = useState(false);
-    const [isVolumeOpen, setIsVolumeOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchText, setSearchText] = useState('');
 
     // Refs
     const containerRef = useRef<HTMLDivElement>(null);
@@ -76,7 +75,6 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
 
     // Handle audio elements
     useEffect(() => {
-      // Cleanup function
       return () => {
         audioRefs.current.forEach((audio) => {
           audio.pause();
@@ -192,7 +190,8 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
         }
       },
       searchTrack: (title: string) => {
-        setSearchQuery(title);
+        setSearchText(title);
+        handleSearch(title);
         const match = musicItems.find(item =>
           item.title.toLowerCase().includes(title.toLowerCase())
         );
@@ -205,6 +204,51 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     const handleSaveMusic = async (music: UserMusic) => {
       await MusicStorage.saveMusic(music);
       await loadMusic();
+    };
+
+    const handleEditMusic = (id: string) => {
+      const music = musicItems.find(m => m.id === id);
+      if (music) {
+        setEditingMusic(music);
+        setShowEditModal(true);
+      }
+    };
+
+    const handleUpdateMusic = async (id: string, title: string, artist: string) => {
+      try {
+        const currentMusic = musicItems.find(m => m.id === id);
+        if (!currentMusic) return;
+
+        const updatedMusic: UserMusic = {
+          ...currentMusic,
+          title,
+          artist: artist || undefined,
+        };
+
+        // Update in storage
+        await MusicStorage.updateMusic(id, updatedMusic);
+        
+        // Update local state
+        const updatedItems = musicItems.map(m => 
+          m.id === id ? updatedMusic : m
+        );
+        setMusicItems(updatedItems);
+        
+        // Update filtered items based on current search
+        if (searchText) {
+          const filtered = updatedItems.filter(item =>
+            item.title.toLowerCase().includes(searchText.toLowerCase()) ||
+            item.artist?.toLowerCase().includes(searchText.toLowerCase())
+          );
+          setFilteredItems(filtered);
+        } else {
+          setFilteredItems(updatedItems);
+        }
+        
+        console.log('Music updated successfully:', updatedMusic);
+      } catch (error) {
+        console.error('Error updating music:', error);
+      }
     };
 
     const handleDeleteMusic = async (id: string) => {
@@ -304,7 +348,8 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     };
 
     const handleSearch = (query: string) => {
-      setSearchQuery(query);
+      setSearchText(query);
+      
       if (!query.trim()) {
         setFilteredItems(musicItems);
       } else {
@@ -313,6 +358,16 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
           item.artist?.toLowerCase().includes(query.toLowerCase())
         );
         setFilteredItems(filtered);
+        
+        // If there's a match and no centered card or the centered card is not in filtered results
+        if (filtered.length > 0) {
+          const centeredStillExists = centeredCard && filtered.some(item => item.id === centeredCard);
+          
+          if (!centeredStillExists) {
+            // Center the first result
+            handleCardClick(filtered[0].id);
+          }
+        }
       }
     };
 
@@ -399,11 +454,12 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
 
     return (
       <IonPage> 
-        <IonHeader> 
-          <IonToolbar>
-            <IonTitle>Musyca</IonTitle>
-          </IonToolbar>
-        </IonHeader>
+        <SearchHeader 
+          title="Musyca" 
+          searchText={searchText} 
+          onSearch={handleSearch}
+          resultCount={filteredItems.length}
+        />
         
         <IonContent fullscreen>
           <div
@@ -429,9 +485,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
                     onCardClick={() => handleCardClick(item.id)}
                     onPlayPause={() => handlePlayPause(item.id)}
                     onDelete={() => handleDeleteMusic(item.id)}
-                    onEdit={() => {
-                      console.log('Edit:', item.id);
-                    }}
+                    onEdit={() => handleEditMusic(item.id)}
                   />
                 </div>
               ))}
@@ -439,6 +493,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
               <div style={{ minWidth: 'calc(50vw - 40%)' }} />
             </div>
           </div>
+
           {filteredItems.length > 0 && (
             <IonCard className="music-player-card">
               <div className="ion-padding">
@@ -502,6 +557,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
               </div>
             </IonCard>
           )}
+
           {filteredItems.length === 0 && (
             <div style={{ 
               display: 'flex', 
@@ -522,14 +578,22 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
             </IonFabButton>
           </IonFab>
 
-          {/* Add Music Modal */}
           <AddMusicModal
             isOpen={showAddModal}
             onClose={() => setShowAddModal(false)}
             onSave={handleSaveMusic}
           />
 
-          {/* Delete Confirmation Alert */}
+          <EditMusicModal
+            isOpen={showEditModal}
+            music={editingMusic}
+            onClose={() => {
+              setShowEditModal(false);
+              setEditingMusic(null);
+            }}
+            onSave={handleUpdateMusic}
+          />
+
           <IonAlert
             isOpen={showDeleteAlert}
             onDidDismiss={() => setShowDeleteAlert(false)}
