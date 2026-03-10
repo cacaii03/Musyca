@@ -100,19 +100,18 @@ async saveMusic(music: UserMusic): Promise<void> {
       throw error;
     }
   },
-
-  async updateMusic(id: string, updates: Partial<UserMusic>): Promise<void> {
-    try {
-      const existing = await musicStore.getItem<any>(id);
-      if (!existing) throw new Error('Music not found');
-      
-      const updated = { ...existing, ...updates };
-      await musicStore.setItem(id, updated);
-    } catch (error) {
-      console.error('Error updating music:', error);
-      throw error;
-    }
-  },
+async updateMusic(id: string, updates: Partial<UserMusic>): Promise<void> {
+  try {
+    const existing = await musicStore.getItem<any>(id);
+    if (!existing) throw new Error('Music not found');
+    
+    const updated = { ...existing, ...updates };
+    await musicStore.setItem(id, updated);
+  } catch (error) {
+    console.error('Error updating music:', error);
+    throw error;
+  }
+},
 
   fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -135,4 +134,5 @@ async saveMusic(music: UserMusic): Promise<void> {
     const blob = new Blob([byteArray], { type });
     return URL.createObjectURL(blob);
   }
+  
 };
