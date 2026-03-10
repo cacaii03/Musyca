@@ -92,7 +92,9 @@ const MusicItem: React.FC<MusicItemProps> = ({
             text: 'Edit',
             icon: create,
             handler: () => {
-              onEdit?.();
+              if (onEdit) {
+                onEdit();
+              }
               setShowActions(false);
             },
           },
@@ -107,7 +109,7 @@ const MusicItem: React.FC<MusicItemProps> = ({
           },
           {
             text: 'Cancel',
-            icon: close, // Fixed: icon should be the imported close object, not a function
+            icon: close,
             role: 'cancel',
           },
         ]}
