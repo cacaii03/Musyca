@@ -27,23 +27,37 @@ import Menu from './components/Menu';
 
 setupIonicReact();
 
-// Lazy load your pages
+// Lazy load your pages for better performance
 const Home = lazy(() => import('./pages/Home'));
 const UserMusics = lazy(() => import('./pages/UserMusics'));
 const Games = lazy(() => import('./pages/Games'));
+const Settings = lazy(() => import('./pages/Settings'));
 
 const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
+        {/* Menu component - contentId matches router outlet */}
         <Menu contentId="main" />
         
+        {/* Main content outlet */}
         <IonRouterOutlet id="main">
           <Suspense fallback={<Loading />}>
+            {/* Home route */}
             <Route exact path="/" component={Home} />
             <Route exact path="/home" component={Home} />
+            
+            {/* Music Player route */}
             <Route exact path="/music" component={UserMusics} />
+            
+            {/* Games route */}
             <Route exact path="/games" component={Games} />
+            
+            {/* Settings route */}
+            <Route exact path="/settings" component={Settings} />
+            
+            {/* Catch all - redirect to home */}
+            <Route exact path="*" render={() => <Home />} />
           </Suspense>
         </IonRouterOutlet>
       </IonReactRouter>
