@@ -13,7 +13,7 @@
   font-weight: 700;
   letter-spacing: 2px;
   color: white !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* Menu Content */
@@ -44,35 +44,35 @@
   transition: all 0.3s ease !important;
 }
 
-/* Light mode hover - more visible */
+/* Light mode hover */
 .menu-item:hover {
-  --background: rgba(0, 0, 0, 0.1) !important;
+  --background: rgba(138, 43, 226, 0.1) !important;
   transform: translateX(5px);
 }
 
 /* Dark mode hover */
 :root.dark .menu-item:hover {
-  --background: rgba(255, 255, 255, 0.15) !important;
+  --background: rgba(138, 43, 226, 0.2) !important;
 }
 
 /* System dark mode preference */
 @media (prefers-color-scheme: dark) {
   .menu-item:hover {
-    --background: rgba(255, 255, 255, 0.15) !important;
+    --background: rgba(138, 43, 226, 0.2) !important;
   }
 }
 
 .menu-item.ion-activated {
-  --background: rgba(0, 0, 0, 0.15) !important;
+  --background: rgba(138, 43, 226, 0.15) !important;
 }
 
 :root.dark .menu-item.ion-activated {
-  --background: rgba(255, 255, 255, 0.2) !important;
+  --background: rgba(138, 43, 226, 0.25) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   .menu-item.ion-activated {
-    --background: rgba(255, 255, 255, 0.2) !important;
+    --background: rgba(138, 43, 226, 0.25) !important;
   }
 }
 
@@ -80,136 +80,134 @@
   font-size: 24px !important;
   margin-right: 16px !important;
   transition: transform 0.3s ease !important;
+  filter: drop-shadow(0 0 5px currentColor);
 }
 
 .menu-item:hover .menu-icon {
   transform: scale(1.1);
+  filter: drop-shadow(0 0 10px currentColor);
 }
 
-/* Icon Colors - brighter and more visible */
+/* Icon Colors */
 .home-icon {
-  color: #2ecc71 !important;
+  color: #4ecdc4 !important;
 }
 
 .music-icon {
-  color: #f39c12 !important;
+  color: #ffaa00 !important;
 }
 
 .games-icon {
-  color: #e74c3c !important;
+  color: #ff6b6b !important;
 }
 
 .settings-icon {
   color: #9b59b6 !important;
 }
 
-/* Dark mode icons - slightly adjusted */
-:root.dark .home-icon {
-  color: #2ecc71 !important;
-}
-
-:root.dark .music-icon {
-  color: #f39c12 !important;
-}
-
-:root.dark .games-icon {
-  color: #e74c3c !important;
-}
-
-:root.dark .settings-icon {
-  color: #9b59b6 !important;
-}
-
-/* System dark mode preference for icons */
-@media (prefers-color-scheme: dark) {
-  .home-icon {
-    color: #2ecc71 !important;
-  }
-  
-  .music-icon {
-    color: #f39c12 !important;
-  }
-  
-  .games-icon {
-    color: #e74c3c !important;
-  }
-  
-  .settings-icon {
-    color: #9b59b6 !important;
-  }
-}
-
-/* Menu Item Labels - NO TEXT SHADOW */
+/* Menu Item Labels - GLOWING PURPLE/BLUE */
 .menu-label {
   font-size: 16px !important;
   font-weight: 600 !important;
   letter-spacing: 0.5px !important;
-  color: var(--ion-text-color, #000) !important;
   opacity: 1 !important;
-  /* No text shadow */
+  
+  /* Beautiful purple-blue gradient glow */
+  background: linear-gradient(135deg, #8a2be2, #4169e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  /* Glow effect */
+  text-shadow: 
+    0 0 10px rgba(138, 43, 226, 0.5),
+    0 0 20px rgba(65, 105, 225, 0.3);
+  
+  animation: labelGlow 3s infinite alternate;
 }
 
-/* Light mode labels */
-.menu-label {
-  color: #000000 !important;
-  font-weight: 600 !important;
-}
-
-/* Dark mode with .dark class */
-:root.dark .menu-label {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
-/* System dark mode preference */
-@media (prefers-color-scheme: dark) {
-  .menu-label {
-    color: #ffffff !important;
-    font-weight: 600 !important;
+@keyframes labelGlow {
+  0% {
+    text-shadow: 
+      0 0 10px rgba(138, 43, 226, 0.5),
+      0 0 20px rgba(65, 105, 225, 0.3);
+  }
+  50% {
+    text-shadow: 
+      0 0 15px rgba(138, 43, 226, 0.8),
+      0 0 30px rgba(65, 105, 225, 0.5),
+      0 0 45px rgba(138, 43, 226, 0.3);
+  }
+  100% {
+    text-shadow: 
+      0 0 10px rgba(138, 43, 226, 0.5),
+      0 0 20px rgba(65, 105, 225, 0.3);
   }
 }
 
 /* Active Route Styling */
 .menu-item.router-link-active {
-  --background: rgba(0, 0, 0, 0.12) !important;
-  border-left: 4px solid var(--ion-color-primary);
-  font-weight: 700 !important;
+  --background: rgba(138, 43, 226, 0.15) !important;
+  border-left: 4px solid #8a2be2;
 }
 
 :root.dark .menu-item.router-link-active {
-  --background: rgba(255, 255, 255, 0.18) !important;
+  --background: rgba(138, 43, 226, 0.25) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   .menu-item.router-link-active {
-    --background: rgba(255, 255, 255, 0.18) !important;
+    --background: rgba(138, 43, 226, 0.25) !important;
   }
 }
 
 .menu-item.router-link-active .menu-icon {
-  color: var(--ion-color-primary) !important;
+  color: #8a2be2 !important;
+  filter: drop-shadow(0 0 10px #8a2be2);
 }
 
 .menu-item.router-link-active .menu-label {
-  font-weight: 700 !important;
-  color: var(--ion-color-primary) !important;
+  background: linear-gradient(135deg, #ffaa00, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 15px rgba(255, 170, 0, 0.5),
+    0 0 30px rgba(255, 107, 107, 0.3);
+  animation: activeGlow 2s infinite alternate;
 }
 
-/* Menu Footer - optional */
+@keyframes activeGlow {
+  0% {
+    text-shadow: 
+      0 0 15px rgba(255, 170, 0, 0.5),
+      0 0 30px rgba(255, 107, 107, 0.3);
+  }
+  100% {
+    text-shadow: 
+      0 0 25px rgba(255, 170, 0, 0.8),
+      0 0 45px rgba(255, 107, 107, 0.5);
+  }
+}
+
+/* Menu Footer */
 .menu-footer {
   position: absolute;
   bottom: 20px;
   left: 0;
   right: 0;
   text-align: center;
-  color: var(--ion-color-medium);
   font-size: 12px;
   padding: 10px;
 }
 
 .menu-footer span {
-  color: var(--ion-color-primary);
+  background: linear-gradient(135deg, #8a2be2, #4169e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   font-weight: 600;
+  text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
 }
 
 /* Responsive */
