@@ -7,7 +7,7 @@ import {
   IonIcon,
   IonActionSheet,
 } from '@ionic/react';
-import { ellipsisVertical, trash, create, close, play, pause } from 'ionicons/icons';
+import { ellipsisVertical, trash, create, close, play, pause, download } from 'ionicons/icons'; // Add download icon
 import { UserMusic } from '../../types/music.types';
 import './MusicItem.css';
 
@@ -19,6 +19,7 @@ interface MusicItemProps {
   onPlayPause: () => void;
   onDelete: () => void;
   onEdit?: () => void;
+  onDownload?: () => void; // Add download handler
 }
 
 const MusicItem: React.FC<MusicItemProps> = ({
@@ -29,6 +30,7 @@ const MusicItem: React.FC<MusicItemProps> = ({
   onPlayPause,
   onDelete,
   onEdit,
+  onDownload,
 }) => {
   const [showActions, setShowActions] = React.useState(false);
 
@@ -88,6 +90,16 @@ const MusicItem: React.FC<MusicItemProps> = ({
         isOpen={showActions}
         onDidDismiss={() => setShowActions(false)}
         buttons={[
+          {
+            text: 'Download',
+            icon: download,
+            handler: () => {
+              if (onDownload) {
+                onDownload();
+              }
+              setShowActions(false);
+            },
+          },
           {
             text: 'Edit',
             icon: create,
