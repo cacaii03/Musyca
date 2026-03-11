@@ -28,7 +28,7 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       
-      <IonContent className="home-content">
+      <IonContent className="home-content" style={{ '--background': 'transparent' }}>
         {/* Hero Section */}
         <div className="hero-section">
           <div className="hero-overlay">
@@ -110,6 +110,7 @@ const Home: React.FC = () => {
               <a href="#" onClick={(e) => { e.preventDefault(); history.push('/home'); }}>Home</a>
               <a href="#" onClick={(e) => { e.preventDefault(); history.push('/music'); }}>Music</a>
               <a href="#" onClick={(e) => { e.preventDefault(); history.push('/games'); }}>Games</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); history.push('/settings'); }}>Settings</a>
             </div>
             <div className="footer-copyright">
               © {new Date().getFullYear()} Musyca. All rights reserved.<br />

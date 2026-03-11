@@ -1,6 +1,6 @@
 /* Home Page Styles */
 .home-content {
-  --background: #1a1a1a;
+  --background: transparent;
 }
 
 /* Hero Section */
@@ -8,7 +8,7 @@
   position: relative;
   height: 80vh;
   min-height: 600px;
-  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+  background: transparent; /* Remove the gradient background */
 }
 
 .hero-overlay {
@@ -17,7 +17,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+  background: transparent; /* Remove the overlay */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,7 +94,7 @@
 /* Features Section */
 .features-section {
   padding: 80px 20px;
-  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  background: transparent; /* Remove the gradient background */
 }
 
 .section-title {
@@ -127,12 +127,12 @@
 }
 
 .feature-card {
-  background: rgba(255,255,255,0.05);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 20px;
   padding: 30px;
   text-align: center;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
@@ -167,9 +167,12 @@
 
 /* CTA Section */
 .cta-section {
-  background: linear-gradient(135deg, #ffaa00, #ff6b6b);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
   padding: 80px 20px;
   text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .cta-content {
@@ -193,8 +196,8 @@
 }
 
 .cta-button {
-  --background: white !important;
-  --color: #ff6b6b !important;
+  --background: linear-gradient(135deg, #ffaa00, #ff6b6b) !important;
+  --color: white !important;
   --border-radius: 50px !important;
   --padding-start: 40px !important;
   --padding-end: 40px !important;
@@ -214,9 +217,10 @@
 
 /* Footer */
 .footer {
-  background: #0a0a0a;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
   padding: 60px 20px 30px;
-  border-top: 1px solid #333;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-content {
@@ -245,7 +249,7 @@
 }
 
 .footer-links a {
-  color: #888;
+  color: #ccc;
   text-decoration: none;
   font-size: 16px;
   transition: color 0.3s ease;
@@ -257,10 +261,10 @@
 }
 
 .footer-copyright {
-  color: #666;
+  color: #aaa;
   font-size: 14px;
   line-height: 1.8;
-  border-top: 1px solid #333;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 30px;
 }
 
