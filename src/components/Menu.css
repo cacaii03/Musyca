@@ -13,7 +13,7 @@
   font-weight: 700;
   letter-spacing: 2px;
   color: white !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Menu Content */
@@ -44,35 +44,34 @@
   transition: all 0.3s ease !important;
 }
 
-/* Light mode hover */
+/* Light mode hover - more visible */
 .menu-item:hover {
-  --background: rgba(0, 0, 0, 0.05) !important;
+  --background: rgba(0, 0, 0, 0.1) !important;
   transform: translateX(5px);
 }
 
-/* Dark mode hover - will automatically work when dark class is present */
+/* Dark mode hover */
 :root.dark .menu-item:hover {
-  --background: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Also handle system preference */
-@media (prefers-color-scheme: dark) {
-  .menu-item:hover {
-    --background: rgba(255, 255, 255, 0.1) !important;
-  }
-}
-
-.menu-item.ion-activated {
-  --background: rgba(0, 0, 0, 0.1) !important;
-}
-
-:root.dark .menu-item.ion-activated {
   --background: rgba(255, 255, 255, 0.15) !important;
 }
 
 @media (prefers-color-scheme: dark) {
-  .menu-item.ion-activated {
+  .menu-item:hover {
     --background: rgba(255, 255, 255, 0.15) !important;
+  }
+}
+
+.menu-item.ion-activated {
+  --background: rgba(0, 0, 0, 0.15) !important;
+}
+
+:root.dark .menu-item.ion-activated {
+  --background: rgba(255, 255, 255, 0.2) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .menu-item.ion-activated {
+    --background: rgba(255, 255, 255, 0.2) !important;
   }
 }
 
@@ -86,60 +85,102 @@
   transform: scale(1.1);
 }
 
-/* Icon Colors - stay the same in both modes */
+/* Icon Colors - brighter and more visible */
 .home-icon {
-  color: #4ecdc4 !important;  /* Turquoise */
+  color: #2ecc71 !important;  /* Brighter green */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .music-icon {
-  color: #ffaa00 !important;  /* Gold */
+  color: #f39c12 !important;  /* Brighter orange */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .games-icon {
-  color: #ff6b6b !important;  /* Coral */
+  color: #e74c3c !important;  /* Brighter red */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .settings-icon {
-  color: #9b59b6 !important;  /* Purple */
+  color: #9b59b6 !important;  /* Brighter purple */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
-/* Menu Item Labels */
+/* Dark mode icons - even brighter */
+:root.dark .home-icon,
+@media (prefers-color-scheme: dark) {
+  .home-icon {
+    color: #2ecc71 !important;
+    filter: drop-shadow(0 2px 4px rgba(0,255,0,0.3));
+  }
+  
+  .music-icon {
+    color: #f39c12 !important;
+    filter: drop-shadow(0 2px 4px rgba(255,165,0,0.3));
+  }
+  
+  .games-icon {
+    color: #e74c3c !important;
+    filter: drop-shadow(0 2px 4px rgba(255,0,0,0.3));
+  }
+  
+  .settings-icon {
+    color: #9b59b6 !important;
+    filter: drop-shadow(0 2px 4px rgba(155,89,182,0.3));
+  }
+}
+
+/* Menu Item Labels - MUCH MORE VISIBLE */
 .menu-label {
   font-size: 16px !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important; /* Bolder */
   letter-spacing: 0.5px !important;
   color: var(--ion-text-color, #000) !important;
-  opacity: 0.9 !important;
+  opacity: 1 !important; /* Full opacity */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark mode label */
-:root.dark .menu-label {
-  color: #fff !important;
+/* Light mode labels - darker for better contrast */
+:root .menu-label {
+  color: #000000 !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
+/* Dark mode labels - brighter white */
+:root.dark .menu-label,
 @media (prefers-color-scheme: dark) {
   .menu-label {
-    color: #fff !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
 }
 
 /* Active Route Styling */
 .menu-item.router-link-active {
-  --background: rgba(0, 0, 0, 0.08) !important;
+  --background: rgba(0, 0, 0, 0.12) !important;
   border-left: 4px solid var(--ion-color-primary);
+  font-weight: 700 !important;
 }
 
 :root.dark .menu-item.router-link-active {
-  --background: rgba(255, 255, 255, 0.12) !important;
+  --background: rgba(255, 255, 255, 0.18) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   .menu-item.router-link-active {
-    --background: rgba(255, 255, 255, 0.12) !important;
+    --background: rgba(255, 255, 255, 0.18) !important;
   }
 }
 
 .menu-item.router-link-active .menu-icon {
+  color: var(--ion-color-primary) !important;
+  filter: drop-shadow(0 2px 4px rgba(var(--ion-color-primary-rgb), 0.4));
+}
+
+.menu-item.router-link-active .menu-label {
+  font-weight: 700 !important;
   color: var(--ion-color-primary) !important;
 }
 
