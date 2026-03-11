@@ -1,13 +1,9 @@
 .settings-content {
-  --background: var(--settings-bg-start, #1a2a3a);
-  background: linear-gradient(135deg, 
-    var(--settings-bg-start, #1a2a3a), 
-    var(--settings-bg-end, #0a1a2a)
-  );
+  --background: transparent;
 }
 
 .settings-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -43,12 +39,12 @@
 
 /* Settings Sections */
 .settings-section {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   margin-bottom: 25px;
   overflow: hidden;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -57,7 +53,7 @@
   align-items: center;
   gap: 12px;
   padding: 20px 20px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .section-header ion-icon {
@@ -81,7 +77,7 @@
 .settings-list ion-item {
   --background: transparent !important;
   --color: white !important;
-  --border-color: rgba(255, 255, 255, 0.1) !important;
+  --border-color: rgba(255, 255, 255, 0.2) !important;
   --padding-start: 20px;
   --padding-end: 20px;
   --inner-padding-end: 0;
@@ -95,7 +91,7 @@
 }
 
 .settings-list ion-item p {
-  color: #aaa !important;
+  color: #ddd !important;
   font-size: 13px !important;
 }
 
@@ -104,7 +100,7 @@
   color: #ffaa00 !important;
   font-size: 18px !important;
   font-weight: bold !important;
-  background: rgba(255, 170, 0, 0.1);
+  background: rgba(255, 170, 0, 0.2);
   padding: 4px 12px;
   border-radius: 20px;
 }
@@ -112,7 +108,7 @@
 /* Danger Item */
 .danger-item {
   --color: #ff4444 !important;
-  --border-color: rgba(255, 68, 68, 0.2) !important;
+  --border-color: rgba(255, 68, 68, 0.3) !important;
   margin-top: 5px;
 }
 
@@ -121,7 +117,7 @@
 }
 
 .danger-item p {
-  color: rgba(255, 68, 68, 0.7) !important;
+  color: rgba(255, 68, 68, 0.8) !important;
 }
 
 /* Volume Control */
@@ -141,7 +137,7 @@
 }
 
 ion-range {
-  --bar-background: rgba(255, 255, 255, 0.1);
+  --bar-background: rgba(255, 255, 255, 0.2);
   --bar-background-active: #ffaa00;
   --knob-background: #ffaa00;
   --pin-background: #ffaa00;
@@ -149,72 +145,74 @@ ion-range {
   flex: 1;
 }
 
-/* Background Select */
-.background-select {
-  --placeholder-color: #ffaa00;
-  --color: white;
-  max-width: 200px;
-}
-
-/* Background Preview */
-.background-preview {
+/* Background Grid */
+.background-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
   padding: 20px;
 }
 
-.preview-box {
-  height: 100px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.preview-box span {
-  color: white;
-  font-size: 18px;
-  font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  background: rgba(0, 0, 0, 0.3);
-  padding: 8px 20px;
-  border-radius: 30px;
-  backdrop-filter: blur(5px);
-}
-
-.preview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 10px;
-}
-
-.preview-option {
-  height: 60px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 12px;
-  font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+.background-option {
   cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  text-align: center;
 }
 
-.preview-option:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+.background-option:hover {
+  transform: translateY(-5px);
 }
 
-.preview-option.selected {
+.background-option.selected .background-preview {
   border-color: #ffaa00;
-  transform: scale(1.05);
-  box-shadow: 0 0 15px #ffaa00;
+  box-shadow: 0 0 20px #ffaa00;
+}
+
+.background-preview {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.preview-id {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.background-description {
+  color: #ccc;
+  font-size: 13px;
+  margin: 10px 0 0;
+  line-height: 1.4;
+}
+
+.selected-info {
+  padding: 15px 20px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  color: white;
+}
+
+.selected-info strong {
+  color: #ffaa00;
 }
 
 /* Save Button */
@@ -242,6 +240,13 @@ ion-range {
 }
 
 /* Responsive */
+@media (max-width: 768px) {
+  .background-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}
+
 @media (max-width: 480px) {
   .settings-container {
     padding: 10px;
@@ -257,8 +262,8 @@ ion-range {
     gap: 5px;
   }
   
-  .preview-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .background-grid {
+    grid-template-columns: 1fr;
   }
   
   .save-button {

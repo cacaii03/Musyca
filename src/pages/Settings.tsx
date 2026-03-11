@@ -26,13 +26,14 @@ import {
   checkmarkCircle 
 } from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
+import { useBackground } from '../contexts/BackgroundContext';
 import backgroundsData from '../data/backgrounds.json';
 import './Settings.css';
 
 interface Background {
   id: string;
-  color: string;
-  gradient: string[];
+  gif: string;
+  thumbnail: string;
   description: string;
 }
 
@@ -43,6 +44,8 @@ const Settings: React.FC = () => {
   const [showClearAlert, setShowClearAlert] = useState(false);
   const [musicCount, setMusicCount] = useState(0);
   const [saveStatus, setSaveStatus] = useState('');
+  
+  const { setCurrentBackground } = useBackground();
 
   // Background options from JSON
   const backgroundOptions: Background[] = backgroundsData.backgrounds;
@@ -58,26 +61,11 @@ const Settings: React.FC = () => {
     if (savedAutoSave) setAutoSave(savedAutoSave === 'true');
     
     loadMusicCount();
-
-    // Apply saved background on load
-    const savedBg = localStorage.getItem('settings_background');
-    if (savedBg) {
-      applyBackground(savedBg);
-    }
   }, []);
 
   const loadMusicCount = async () => {
     const music = await MusicStorage.getAllMusic();
     setMusicCount(music.length);
-  };
-
-  const applyBackground = (bgId: string) => {
-    const bg = backgroundOptions.find(b => b.id === bgId);
-    if (bg) {
-      document.documentElement.style.setProperty('--settings-bg', bg.color);
-      document.documentElement.style.setProperty('--settings-bg-start', bg.gradient[0]);
-      document.documentElement.style.setProperty('--settings-bg-end', bg.gradient[1]);
-    }
   };
 
   // Save settings to localStorage
@@ -86,7 +74,8 @@ const Settings: React.FC = () => {
     localStorage.setItem('settings_background', selectedBackground);
     localStorage.setItem('settings_autosave', autoSave.toString());
     
-    applyBackground(selectedBackground);
+    // Update background globally
+    setCurrentBackground(selectedBackground);
     
     setSaveStatus('Settings saved!');
     setTimeout(() => setSaveStatus(''), 2000);
@@ -106,18 +95,6 @@ const Settings: React.FC = () => {
     } catch (error) {
       console.error('Error clearing music:', error);
     }
-  };
-
-  // Get background preview color
-  const getBgPreview = () => {
-    const option = backgroundOptions.find(b => b.id === selectedBackground);
-    return option ? option.color : '#1a2a3a';
-  };
-
-  // Get background description
-  const getBgDescription = () => {
-    const option = backgroundOptions.find(b => b.id === selectedBackground);
-    return option ? option.description : '';
   };
 
   return (
@@ -216,52 +193,29 @@ const Settings: React.FC = () => {
               <h2>Background Theme</h2>
             </div>
             
-            <IonList className="settings-list">
-              <IonItem>
-                <IonLabel>
-                  <h3>Select Background</h3>
-                  <p>{getBgDescription()}</p>
-                </IonLabel>
-                <IonSelect
-                  value={selectedBackground}
-                  onIonChange={e => setSelectedBackground(e.detail.value)}
-                  interface="action-sheet"
-                  className="background-select"
+            <div className="background-grid">
+              {backgroundOptions.map(option => (
+                <div
+                  key={option.id}
+                  className={`background-option ${selectedBackground === option.id ? 'selected' : ''}`}
+                  onClick={() => setSelectedBackground(option.id)}
                 >
-                  {backgroundOptions.map(option => (
-                    <IonSelectOption key={option.id} value={option.id}>
-                      {option.id}
-                    </IonSelectOption>
-                  ))}
-                </IonSelect>
-              </IonItem>
-              
-              {/* Background Preview */}
-              <div className="background-preview">
-                <div 
-                  className="preview-box" 
-                  style={{ 
-                    background: `linear-gradient(135deg, ${getBgPreview()}, #0a1a2a)`
-                  }}
-                >
-                  <span>{selectedBackground}</span>
-                </div>
-                <div className="preview-grid">
-                  {backgroundOptions.map(option => (
-                    <div 
-                      key={option.id}
-                      className={`preview-option ${selectedBackground === option.id ? 'selected' : ''}`}
-                      style={{ 
-                        background: `linear-gradient(135deg, ${option.color}, #0a1a2a)`
-                      }}
-                      onClick={() => setSelectedBackground(option.id)}
-                    >
-                      {option.id}
+                  <div 
+                    className="background-preview"
+                    style={{ backgroundImage: `url(${option.thumbnail})` }}
+                  >
+                    <div className="preview-overlay">
+                      <span className="preview-id">{option.id}</span>
                     </div>
-                  ))}
+                  </div>
+                  <p className="background-description">{option.description}</p>
                 </div>
-              </div>
-            </IonList>
+              ))}
+            </div>
+
+            <div className="selected-info">
+              <p>Current: <strong>{selectedBackground}</strong> - {backgroundOptions.find(b => b.id === selectedBackground)?.description}</p>
+            </div>
           </div>
 
           {/* Save Button */}
@@ -271,7 +225,7 @@ const Settings: React.FC = () => {
               onClick={saveSettings}
               className="save-button"
             >
-              Save Settings
+              Apply Background
             </IonButton>
           </div>
 
