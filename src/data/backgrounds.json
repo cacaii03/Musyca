@@ -2,33 +2,33 @@
   "backgrounds": [
     {
       "id": "MBG1",
-      "color": "#1a2a3a",
-      "gradient": ["#1a2a3a", "#0a1a2a"],
-      "description": "Deep blue theme for night sessions"
+      "gif": "/assets/backgrounds/MBG1.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG1.jpg",
+      "description": "Dynamic blue waves - Default theme"
     },
     {
       "id": "MBG2",
-      "color": "#2a3a2a",
-      "gradient": ["#2a3a2a", "#1a2a1a"],
-      "description": "Calming green for focused listening"
+      "gif": "/assets/backgrounds/MBG2.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG2.jpg",
+      "description": "Calming green forest animation"
     },
     {
       "id": "MBG3",
-      "color": "#3a2a3a",
-      "gradient": ["#3a2a3a", "#2a1a2a"],
-      "description": "Elegant purple for creative vibes"
+      "gif": "/assets/backgrounds/MBG3.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG3.jpg",
+      "description": "Elegant purple nebula"
     },
     {
       "id": "MBG4",
-      "color": "#3a2a2a",
-      "gradient": ["#3a2a2a", "#2a1a1a"],
-      "description": "Warm orange for energetic moods"
+      "gif": "/assets/backgrounds/MBG4.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG4.jpg",
+      "description": "Warm sunset glow animation"
     },
     {
       "id": "MBG5",
-      "color": "#2a3a3a",
-      "gradient": ["#2a3a3a", "#1a2a2a"],
-      "description": "Fresh teal for a modern look"
+      "gif": "/assets/backgrounds/MBG5.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG5.jpg",
+      "description": "Fresh ocean waves"
     }
   ]
 }
