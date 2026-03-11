@@ -7,6 +7,13 @@ import {
   IonFabButton,
   IonAlert,
   IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonMenuButton,
+  IonSearchbar,
+  IonBadge,
 } from '@ionic/react';
 import { add } from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
@@ -21,7 +28,6 @@ import MusicShuffleButton from '../components/MusicsProps/MusicShuffleButton';
 import AddMusicModal from '../components/MusicsProps/AddMusicModal';
 import EditMusicModal from '../components/MusicsProps/EditMusicModal';
 import MusicItem from '../components/MusicsProps/MusicItem';
-import SearchHeader from '../components/MusicsProps/SearchHeader';
 import './UserMusics.css';
 
 interface UserMusicsProps {
@@ -458,13 +464,31 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     };
 
     return (
-      <IonPage> 
-        <SearchHeader 
-          title="Musyca" 
-          searchText={searchText} 
-          onSearch={handleSearch}
-          resultCount={filteredItems.length}
-        />
+      <IonPage>
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonMenuButton />
+            </IonButtons>
+            <IonTitle>Musyca</IonTitle>
+            {searchText && (
+              <IonBadge color="primary" slot="end" style={{ marginRight: '10px' }}>
+                {filteredItems.length} {filteredItems.length === 1 ? 'result' : 'results'}
+              </IonBadge>
+            )}
+          </IonToolbar>
+          <IonToolbar>
+            <IonSearchbar
+              value={searchText}
+              onIonInput={e => handleSearch(e.detail.value || '')}
+              onIonClear={() => handleSearch('')}
+              placeholder="Search by title or artist"
+              animated
+              showCancelButton="focus"
+              cancelButtonText="Clear"
+            />
+          </IonToolbar>
+        </IonHeader>
         
         <IonContent fullscreen>
           <div

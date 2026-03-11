@@ -19,18 +19,18 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({ contentId }) => {
   return (
-    <IonMenu contentId={contentId}>
+    <IonMenu contentId={contentId} side="start" type="overlay">
       <IonHeader>
         <IonToolbar color="primary">
           <IonTitle>Musyca</IonTitle>
         </IonToolbar>
       </IonHeader>
       
-      <IonContent className="ion-padding">
+      <IonContent>
         <IonList>
           <IonMenuToggle autoHide={false}>
             <IonItem button routerLink="/music" routerDirection="root" detail={false}>
-              <IonIcon icon={musicalNotes} slot="start" />
+              <IonIcon icon={musicalNotes} slot="start" color="primary" />
               <IonLabel>Music Player</IonLabel>
             </IonItem>
           </IonMenuToggle>

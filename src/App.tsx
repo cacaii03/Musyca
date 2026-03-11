@@ -1,15 +1,15 @@
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import UserMusics from './pages/UserMusics';
+import { lazy, Suspense } from 'react';
 
-/* Core CSS required for Ionic components to work properly */
+/* Core CSS imports */
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
 
-/* Optional CSS utils that can be commented out */
+/* Optional CSS utils */
 import '@ionic/react/css/padding.css';
 import '@ionic/react/css/float-elements.css';
 import '@ionic/react/css/text-alignment.css';
@@ -17,24 +17,32 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-/* Ionic Dark Mode */
+/* Dark Mode */
 import '@ionic/react/css/palettes/dark.system.css';
 
-/* Theme variables */
+/* Theme */
 import './theme/variables.css';
+import Loading from './components/MusicsProps/Loading';
+import Menu from './components/Menu';
 
 setupIonicReact();
 
+// Lazy load your pages
+const UserMusics = lazy(() => import('./pages/UserMusics'));
+
 const App: React.FC = () => {
-  console.log('🔵 App component is rendering');
+  console.log('App rendering with Menu'); // Debug log
   
   return (
     <IonApp>
       <IonReactRouter>
-        <IonRouterOutlet>
-          <Route exact path="/">
-            <UserMusics />
-          </Route>
+        <Menu contentId="main" />
+        
+        <IonRouterOutlet id="main">
+          <Suspense fallback={<Loading />}>
+            <Route exact path="/" component={UserMusics} />
+            <Route exact path="/music" component={UserMusics} />
+          </Suspense>
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
