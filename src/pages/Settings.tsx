@@ -48,7 +48,6 @@ interface Background {
   id: string;
   gif: string;
   thumbnail: string;
-  description: string;
 }
 
 const Settings: React.FC = () => {
@@ -66,32 +65,27 @@ const Settings: React.FC = () => {
     {
       id: 'MBG1',
       gif: bg1,
-      thumbnail: thumb1,
-      description: 'Dynamic blue waves - Default theme'
+      thumbnail: thumb1
     },
     {
       id: 'MBG2',
       gif: bg2,
-      thumbnail: thumb2,
-      description: 'Calming green forest animation'
+      thumbnail: thumb2
     },
     {
       id: 'MBG3',
       gif: bg3,
-      thumbnail: thumb3,
-      description: 'Elegant purple nebula'
+      thumbnail: thumb3
     },
     {
       id: 'MBG4',
       gif: bg4,
-      thumbnail: thumb4,
-      description: 'Warm sunset glow animation'
+      thumbnail: thumb4
     },
     {
       id: 'MBG5',
       gif: bg5,
-      thumbnail: thumb5,
-      description: 'Fresh ocean waves'
+      thumbnail: thumb5
     },
   ];
 
@@ -258,13 +252,12 @@ const saveSettings = () => {
                       <span className="preview-id">{option.id}</span>
                     </div>
                   </div>
-                  <p className="background-description">{option.description}</p>
                 </div>
               ))}
             </div>
 
             <div className="selected-info">
-              <p>Current: <strong>{selectedBackground}</strong> - {backgroundOptions.find(b => b.id === selectedBackground)?.description}</p>
+              <p>Current: <strong>{selectedBackground}</strong> - {backgroundOptions.find(b => b.id === selectedBackground)?.id}</p>
             </div>
           </div>
 

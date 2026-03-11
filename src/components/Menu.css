@@ -88,91 +88,77 @@
 
 /* Icon Colors - brighter and more visible */
 .home-icon {
-  color: #2ecc71 !important;  /* Brighter green */
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  color: #2ecc71 !important;
 }
 
 .music-icon {
-  color: #f39c12 !important;  /* Brighter orange */
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  color: #f39c12 !important;
 }
 
 .games-icon {
-  color: #e74c3c !important;  /* Brighter red */
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  color: #e74c3c !important;
 }
 
 .settings-icon {
-  color: #9b59b6 !important;  /* Brighter purple */
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  color: #9b59b6 !important;
 }
 
-/* Dark mode icons - even brighter */
+/* Dark mode icons - slightly adjusted */
 :root.dark .home-icon {
   color: #2ecc71 !important;
-  filter: drop-shadow(0 2px 4px rgba(0,255,0,0.3));
 }
 
 :root.dark .music-icon {
   color: #f39c12 !important;
-  filter: drop-shadow(0 2px 4px rgba(255,165,0,0.3));
 }
 
 :root.dark .games-icon {
   color: #e74c3c !important;
-  filter: drop-shadow(0 2px 4px rgba(255,0,0,0.3));
 }
 
 :root.dark .settings-icon {
   color: #9b59b6 !important;
-  filter: drop-shadow(0 2px 4px rgba(155,89,182,0.3));
 }
 
 /* System dark mode preference for icons */
 @media (prefers-color-scheme: dark) {
   .home-icon {
     color: #2ecc71 !important;
-    filter: drop-shadow(0 2px 4px rgba(0,255,0,0.3));
   }
   
   .music-icon {
     color: #f39c12 !important;
-    filter: drop-shadow(0 2px 4px rgba(255,165,0,0.3));
   }
   
   .games-icon {
     color: #e74c3c !important;
-    filter: drop-shadow(0 2px 4px rgba(255,0,0,0.3));
   }
   
   .settings-icon {
     color: #9b59b6 !important;
-    filter: drop-shadow(0 2px 4px rgba(155,89,182,0.3));
   }
 }
 
-/* Menu Item Labels - MUCH MORE VISIBLE */
+/* Menu Item Labels - NO TEXT SHADOW */
 .menu-label {
   font-size: 16px !important;
   font-weight: 600 !important;
   letter-spacing: 0.5px !important;
   color: var(--ion-text-color, #000) !important;
   opacity: 1 !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  /* No text shadow */
 }
 
-/* Light mode labels - darker for better contrast */
+/* Light mode labels */
 .menu-label {
   color: #000000 !important;
   font-weight: 600 !important;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 /* Dark mode with .dark class */
 :root.dark .menu-label {
   color: #ffffff !important;
   font-weight: 600 !important;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* System dark mode preference */
@@ -180,7 +166,6 @@
   .menu-label {
     color: #ffffff !important;
     font-weight: 600 !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -203,7 +188,6 @@
 
 .menu-item.router-link-active .menu-icon {
   color: var(--ion-color-primary) !important;
-  filter: drop-shadow(0 2px 4px rgba(var(--ion-color-primary-rgb), 0.4));
 }
 
 .menu-item.router-link-active .menu-label {
