@@ -12,6 +12,7 @@ import {
   IonMenuToggle,
 } from '@ionic/react';
 import { home, musicalNotes, gameController, settings } from 'ionicons/icons';
+import './Menu.css';
 
 interface MenuProps {
   contentId: string;
@@ -38,7 +39,7 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
               className="menu-item"
             >
               <IonIcon icon={home} slot="start" className="menu-icon home-icon" />
-              <IonLabel>Home</IonLabel>
+              <IonLabel className="menu-label">Home</IonLabel>
             </IonItem>
             
             {/* Music Player Link */}
@@ -50,7 +51,7 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
               className="menu-item"
             >
               <IonIcon icon={musicalNotes} slot="start" className="menu-icon music-icon" />
-              <IonLabel>Music Player</IonLabel>
+              <IonLabel className="menu-label">Music Player</IonLabel>
             </IonItem>
             
             {/* Games Link */}
@@ -62,7 +63,7 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
               className="menu-item"
             >
               <IonIcon icon={gameController} slot="start" className="menu-icon games-icon" />
-              <IonLabel>Games</IonLabel>
+              <IonLabel className="menu-label">Games</IonLabel>
             </IonItem>
 
             {/* Settings Link */}
@@ -74,7 +75,7 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
               className="menu-item"
             >
               <IonIcon icon={settings} slot="start" className="menu-icon settings-icon" />
-              <IonLabel>Settings</IonLabel>
+              <IonLabel className="menu-label">Settings</IonLabel>
             </IonItem>
           </IonMenuToggle>
         </IonList>

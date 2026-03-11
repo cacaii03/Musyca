@@ -1,26 +1,25 @@
 /* Menu Toolbar */
 .menu-toolbar {
-  --background: #2c3e50 !important;  /* Dark blue-gray */
+  --background: var(--ion-color-primary) !important;
   --color: white !important;
+  --border-color: transparent !important;
   --border-width: 0 !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  --border-style: none !important;
+  --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
 }
 
 .menu-title {
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 2px;
-  background: linear-gradient(135deg, #fff, #ffaa00);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  color: white !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Menu Content */
 .menu-content {
-  --background: #34495e !important;  /* Slightly lighter dark blue-gray */
-  background: linear-gradient(135deg, #34495e, #2c3e50) !important;
+  --background: var(--ion-background-color, #f5f5f5);
+  background: var(--ion-background-color, #f5f5f5);
 }
 
 .menu-list {
@@ -30,23 +29,51 @@
 
 .menu-item {
   --background: transparent !important;
-  --color: white !important;
+  --color: var(--ion-text-color, #000) !important;
+  --color-hover: var(--ion-text-color, #000) !important;
+  --color-focused: var(--ion-text-color, #000) !important;
+  --color-activated: var(--ion-text-color, #000) !important;
   --border-radius: 12px !important;
   --padding-start: 16px !important;
   --padding-end: 16px !important;
   --min-height: 56px !important;
+  --border-color: transparent !important;
+  --ripple-color: var(--ion-color-primary) !important;
   margin: 8px 0 !important;
   border-radius: 12px !important;
   transition: all 0.3s ease !important;
 }
 
+/* Light mode hover */
 .menu-item:hover {
-  --background: rgba(255, 255, 255, 0.1) !important;
+  --background: rgba(0, 0, 0, 0.05) !important;
   transform: translateX(5px);
 }
 
+/* Dark mode hover - will automatically work when dark class is present */
+:root.dark .menu-item:hover {
+  --background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Also handle system preference */
+@media (prefers-color-scheme: dark) {
+  .menu-item:hover {
+    --background: rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
 .menu-item.ion-activated {
-  --background: rgba(255, 170, 0, 0.2) !important;
+  --background: rgba(0, 0, 0, 0.1) !important;
+}
+
+:root.dark .menu-item.ion-activated {
+  --background: rgba(255, 255, 255, 0.15) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .menu-item.ion-activated {
+    --background: rgba(255, 255, 255, 0.15) !important;
+  }
 }
 
 .menu-icon {
@@ -59,7 +86,7 @@
   transform: scale(1.1);
 }
 
-/* Icon Colors */
+/* Icon Colors - stay the same in both modes */
 .home-icon {
   color: #4ecdc4 !important;  /* Turquoise */
 }
@@ -77,36 +104,59 @@
 }
 
 /* Menu Item Labels */
-.menu-item ion-label {
+.menu-label {
   font-size: 16px !important;
   font-weight: 500 !important;
   letter-spacing: 0.5px !important;
+  color: var(--ion-text-color, #000) !important;
+  opacity: 0.9 !important;
+}
+
+/* Dark mode label */
+:root.dark .menu-label {
+  color: #fff !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .menu-label {
+    color: #fff !important;
+  }
 }
 
 /* Active Route Styling */
 .menu-item.router-link-active {
-  --background: rgba(255, 170, 0, 0.15) !important;
-  border-left: 4px solid #ffaa00;
+  --background: rgba(0, 0, 0, 0.08) !important;
+  border-left: 4px solid var(--ion-color-primary);
+}
+
+:root.dark .menu-item.router-link-active {
+  --background: rgba(255, 255, 255, 0.12) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .menu-item.router-link-active {
+    --background: rgba(255, 255, 255, 0.12) !important;
+  }
 }
 
 .menu-item.router-link-active .menu-icon {
-  color: #ffaa00 !important;
+  color: var(--ion-color-primary) !important;
 }
 
-/* Menu Footer */
+/* Menu Footer - optional */
 .menu-footer {
   position: absolute;
   bottom: 20px;
   left: 0;
   right: 0;
   text-align: center;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--ion-color-medium);
   font-size: 12px;
   padding: 10px;
 }
 
 .menu-footer span {
-  color: #ffaa00;
+  color: var(--ion-color-primary);
   font-weight: 600;
 }
 
@@ -125,7 +175,7 @@
     font-size: 20px !important;
   }
   
-  .menu-item ion-label {
+  .menu-label {
     font-size: 14px !important;
   }
 }
