@@ -8,10 +8,7 @@
   position: relative;
   height: 80vh;
   min-height: 600px;
-  background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
 }
 
 .hero-overlay {

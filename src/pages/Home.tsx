@@ -107,10 +107,9 @@ const Home: React.FC = () => {
           <div className="footer-content">
             <div className="footer-logo">MUSYCA</div>
             <div className="footer-links">
+              <a href="#" onClick={(e) => { e.preventDefault(); history.push('/home'); }}>Home</a>
               <a href="#" onClick={(e) => { e.preventDefault(); history.push('/music'); }}>Music</a>
               <a href="#" onClick={(e) => { e.preventDefault(); history.push('/games'); }}>Games</a>
-              <a href="#" onClick={(e) => { e.preventDefault(); }}>About</a>
-              <a href="#" onClick={(e) => { e.preventDefault(); }}>Contact</a>
             </div>
             <div className="footer-copyright">
               © {new Date().getFullYear()} Musyca. All rights reserved.<br />
