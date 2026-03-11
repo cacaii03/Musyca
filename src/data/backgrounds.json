@@ -1,0 +1,29 @@
+{
+  "backgrounds": [
+    {
+      "id": "MBG1",
+      "gif": "/assets/backgrounds/MBG1.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG1.jpg"
+    },
+    {
+      "id": "MBG2",
+      "gif": "/assets/backgrounds/MBG2.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG2.jpg"
+    },
+    {
+      "id": "MBG3",
+      "gif": "/assets/backgrounds/MBG3.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG3.jpg"
+    },
+    {
+      "id": "MBG4",
+      "gif": "/assets/backgrounds/MBG4.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG4.jpg"
+    },
+    {
+      "id": "MBG5",
+      "gif": "/assets/backgrounds/MBG5.gif",
+      "thumbnail": "/assets/backgrounds/thumbs/MBG5.jpg"
+    }
+  ]
+}

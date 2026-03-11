@@ -1,0 +1,7 @@
+{
+  "name": "Musyca",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

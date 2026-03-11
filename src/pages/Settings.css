@@ -1,0 +1,272 @@
+.settings-content {
+  --background: transparent;
+}
+
+.settings-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Save Status */
+.save-status {
+  background: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideDown 0.3s ease;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+.save-status ion-icon {
+  font-size: 24px;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Settings Sections */
+.settings-section {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  margin-bottom: 25px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.section-header ion-icon {
+  font-size: 28px;
+  color: #ffaa00;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.settings-list {
+  background: transparent !important;
+  padding: 10px 0 !important;
+}
+
+.settings-list ion-item {
+  --background: transparent !important;
+  --color: white !important;
+  --border-color: rgba(255, 255, 255, 0.2) !important;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --inner-padding-end: 0;
+}
+
+.settings-list ion-item h3 {
+  color: white !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  margin-bottom: 4px !important;
+}
+
+.settings-list ion-item p {
+  color: #ddd !important;
+  font-size: 13px !important;
+}
+
+/* Music Count */
+.music-count {
+  color: #ffaa00 !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  background: rgba(255, 170, 0, 0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+/* Danger Item */
+.danger-item {
+  --color: #ff4444 !important;
+  --border-color: rgba(255, 68, 68, 0.3) !important;
+  margin-top: 5px;
+}
+
+.danger-item h3 {
+  color: #ff4444 !important;
+}
+
+.danger-item p {
+  color: rgba(255, 68, 68, 0.8) !important;
+}
+
+/* Volume Control */
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.volume-value {
+  color: #ffaa00;
+  font-size: 16px;
+  font-weight: bold;
+  min-width: 45px;
+}
+
+ion-range {
+  --bar-background: rgba(255, 255, 255, 0.2);
+  --bar-background-active: #ffaa00;
+  --knob-background: #ffaa00;
+  --pin-background: #ffaa00;
+  --pin-color: white;
+  flex: 1;
+}
+
+/* Background Grid */
+.background-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.background-option {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.background-option:hover {
+  transform: translateY(-5px);
+}
+
+.background-option.selected .background-preview {
+  border-color: #ffaa00;
+  box-shadow: 0 0 20px #ffaa00;
+}
+
+.background-preview {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.preview-id {
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.background-description {
+  color: #ccc;
+  font-size: 13px;
+  margin: 10px 0 0;
+  line-height: 1.4;
+}
+
+.selected-info {
+  padding: 15px 20px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  color: white;
+}
+
+.selected-info strong {
+  color: #ffaa00;
+}
+
+/* Save Button */
+.save-button-container {
+  margin-top: 30px;
+  padding: 0 20px;
+}
+
+.save-button {
+  --background: linear-gradient(135deg, #ffaa00, #ff6b6b) !important;
+  --border-radius: 50px !important;
+  --padding-top: 20px !important;
+  --padding-bottom: 20px !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  --box-shadow: 0 10px 20px rgba(255, 170, 0, 0.3) !important;
+  transition: transform 0.3s ease !important;
+}
+
+.save-button:hover {
+  transform: translateY(-3px);
+  --box-shadow: 0 15px 30px rgba(255, 170, 0, 0.4) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .background-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-container {
+    padding: 10px;
+  }
+  
+  .section-header h2 {
+    font-size: 18px;
+  }
+  
+  .volume-control {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .background-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .save-button {
+    font-size: 16px !important;
+  }
+}
