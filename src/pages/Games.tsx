@@ -25,10 +25,9 @@ import DrumKit from '../components/Games/DrumKit';
 import PianoKit from '../components/Games/PianoKit';
 import './Games.css';
 
-// Import your PNG images
-import guitarImage from '../components/MusicsProps/guitar.png';
-import drumImage from '../components/MusicsProps/drum.png';
-import pianoImage from '../components/MusicsProps/piano.png';
+import guitarImage from '../components/MusicsProps/Guitar.png';
+import drumImage from '../components/MusicsProps/Drum.png';
+import pianoImage from '../components/MusicsProps/Piano.png';
 
 const Games: React.FC = () => {
   const [musicItems, setMusicItems] = useState<UserMusic[]>([]);
