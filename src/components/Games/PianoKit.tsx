@@ -95,24 +95,67 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
     }
   }, [isPlaying]);
 
-  // Play piano note
+  // Realistic piano sound using multiple oscillators and envelope
   const playPianoNote = (freq: number) => {
     try {
       const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
       
-      osc.type = 'sine';
-      osc.frequency.value = freq;
+      // Main oscillator (fundamental)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
       
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      // Second oscillator for richness
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
       
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+      // Third oscillator for brightness
+      const osc3 = ctx.createOscillator();
+      const gain3 = ctx.createGain();
       
-      osc.start();
-      osc.stop(ctx.currentTime + 0.5);
+      // Master gain
+      const masterGain = ctx.createGain();
+      
+      // Set oscillator types
+      osc1.type = 'triangle'; // Fundamental
+      osc2.type = 'sine';     // Richness
+      osc3.type = 'sawtooth';  // Brightness
+      
+      // Set frequencies (slightly detuned for realism)
+      osc1.frequency.value = freq;
+      osc2.frequency.value = freq * 2.01; // Octave with slight detune
+      osc3.frequency.value = freq * 4.02; // Two octaves with detune
+      
+      // Volume levels
+      gain1.gain.value = 0.5;
+      gain2.gain.value = 0.3;
+      gain3.gain.value = 0.2;
+      
+      // Attack and decay (piano envelope)
+      const now = ctx.currentTime;
+      masterGain.gain.setValueAtTime(0, now);
+      masterGain.gain.linearRampToValueAtTime(0.8, now + 0.01); // Fast attack
+      masterGain.gain.exponentialRampToValueAtTime(0.01, now + 1.5); // Slow decay
+      
+      // Connect oscillators
+      osc1.connect(gain1);
+      osc2.connect(gain2);
+      osc3.connect(gain3);
+      
+      gain1.connect(masterGain);
+      gain2.connect(masterGain);
+      gain3.connect(masterGain);
+      
+      masterGain.connect(ctx.destination);
+      
+      // Start and stop
+      osc1.start();
+      osc2.start();
+      osc3.start();
+      
+      osc1.stop(now + 1.5);
+      osc2.stop(now + 1.4);
+      osc3.stop(now + 1.3);
+      
     } catch (e) {
       console.log('Audio error:', e);
     }
@@ -136,7 +179,7 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
           playPianoNote(pianoKey.freq);
         }
         
-        setTimeout(() => setActiveKey(null), 200);
+        setTimeout(() => setActiveKey(null), 300);
       }
     };
     
@@ -149,7 +192,7 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
   const handleKeyClick = (type: 'white' | 'black', index: number, freq: number) => {
     setActiveKey(`${type}-${index}`);
     playPianoNote(freq);
-    setTimeout(() => setActiveKey(null), 200);
+    setTimeout(() => setActiveKey(null), 300);
   };
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -188,8 +231,11 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
     const draw = () => {
       ctx.clearRect(0, 0, 700, 400);
       
-      // Draw piano background
-      ctx.fillStyle = '#2a2a2a';
+      // Draw elegant piano background
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, '#2c3e50');
+      gradient.addColorStop(1, '#1a1a1a');
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 700, 400);
       
       // Draw white keys
@@ -197,12 +243,21 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
         const isActive = activeKey === `white-${index}`;
         
         // Key shadow
-        ctx.shadowColor = 'rgba(0,0,0,0.3)';
+        ctx.shadowColor = 'rgba(0,0,0,0.5)';
         ctx.shadowBlur = 10;
         ctx.shadowOffsetY = 3;
         
-        // White key
-        ctx.fillStyle = isActive ? '#ffff99' : '#ffffff';
+        // White key with gradient
+        const keyGradient = ctx.createLinearGradient(key.x - 25, 50, key.x + 25, 350);
+        if (isActive) {
+          keyGradient.addColorStop(0, '#ffffaa');
+          keyGradient.addColorStop(1, '#ffff66');
+        } else {
+          keyGradient.addColorStop(0, '#ffffff');
+          keyGradient.addColorStop(1, '#f0f0f0');
+        }
+        
+        ctx.fillStyle = keyGradient;
         ctx.fillRect(key.x - 25, 50, 50, 300);
         
         // Key border
@@ -211,15 +266,15 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
         ctx.lineWidth = 1;
         ctx.strokeRect(key.x - 25, 50, 50, 300);
         
-        // Key label
+        // Key label (note name)
         ctx.fillStyle = '#333';
         ctx.font = 'bold 14px Arial';
         ctx.textAlign = 'center';
         ctx.fillText(key.name, key.x, 320);
         
-        // Key hint
-        ctx.fillStyle = '#ffaa00';
-        ctx.font = '12px Arial';
+        // Key hint (keyboard key)
+        ctx.fillStyle = isActive ? '#ffaa00' : '#666';
+        ctx.font = 'bold 12px Arial';
         ctx.fillText(key.key.toUpperCase(), key.x, 360);
       });
       
@@ -231,29 +286,48 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
         ctx.shadowBlur = 10;
         ctx.shadowOffsetY = 3;
         
-        // Black key
-        ctx.fillStyle = isActive ? '#6666ff' : '#333333';
+        // Black key with gradient
+        const keyGradient = ctx.createLinearGradient(key.x - 15, 50, key.x + 15, 230);
+        if (isActive) {
+          keyGradient.addColorStop(0, '#6666ff');
+          keyGradient.addColorStop(1, '#333399');
+        } else {
+          keyGradient.addColorStop(0, '#333333');
+          keyGradient.addColorStop(1, '#111111');
+        }
+        
+        ctx.fillStyle = keyGradient;
         ctx.fillRect(key.x - 15, 50, 30, 180);
         
         // Key label
         ctx.shadowBlur = 0;
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 12px Arial';
+        ctx.fillStyle = isActive ? '#ffffaa' : '#aaa';
+        ctx.font = 'bold 11px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(key.name, key.x, 150);
+        ctx.fillText(key.name, key.x, 140);
         
         // Key hint
-        ctx.fillStyle = '#ffaa00';
-        ctx.font = '11px Arial';
-        ctx.fillText(key.key.toUpperCase(), key.x, 200);
+        ctx.fillStyle = isActive ? '#ffaa00' : '#888';
+        ctx.font = 'bold 10px Arial';
+        ctx.fillText(key.key.toUpperCase(), key.x, 190);
       });
       
-      // Draw piano brand
+      // Draw piano brand and decorations
       ctx.shadowBlur = 0;
-      ctx.fillStyle = '#ffaa00';
-      ctx.font = 'italic 16px "Times New Roman"';
+      ctx.fillStyle = 'rgba(255,255,255,0.1)';
+      ctx.font = 'italic 20px "Times New Roman"';
       ctx.textAlign = 'right';
       ctx.fillText('Grand Piano', 680, 380);
+      
+      // Draw subtle key dividers
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 1;
+      for (let i = 1; i < whiteKeys.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(whiteKeys[i].x - 25, 50);
+        ctx.lineTo(whiteKeys[i].x - 25, 350);
+        ctx.stroke();
+      }
       
       requestAnimationFrame(draw);
     };
@@ -270,7 +344,7 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
               <IonIcon icon={arrowBack} />
             </IonButton>
           </IonButtons>
-          <IonTitle>PIANO KIT</IonTitle>
+          <IonTitle>GRAND PIANO</IonTitle>
           <IonButtons slot="end">
             <IonButton onClick={() => setIsPlaying(!isPlaying)}>
               <IonIcon icon={isPlaying ? pause : play} />
@@ -295,8 +369,8 @@ const PianoKit: React.FC<PianoKitProps> = ({ music, onExit }) => {
           />
           
           <div className="key-guide">
-            <p>White Keys: A S D F G H J K L ; | Black Keys: W E T Y U O P</p>
-            <p className="note">🎹 2 Octave Grand Piano • Click keys or use keyboard</p>
+            <p className="main-guide">🎹 White Keys: A S D F G H J K L ; | Black Keys: W E T Y U O P</p>
+            <p className="note">Realistic grand piano sound • 2 octaves • Click or use keyboard</p>
           </div>
         </div>
       </IonContent>
