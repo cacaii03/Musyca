@@ -8,23 +8,32 @@
 
 .game-header {
   display: flex;
-  justify-content: space-around;
-  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
   background: #2a2a2a;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
+}
+
+.song-info {
+  color: #ffaa00;
+  flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .score {
   color: #4caf50;
+  flex: 1;
+  text-align: center;
 }
 
 .combo {
   color: #ff9800;
-}
-
-.time {
-  color: #2196f3;
+  flex: 1;
+  text-align: center;
 }
 
 .game-canvas-container {
@@ -33,13 +42,14 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  background: #000;
 }
 
 .game-canvas {
   width: 100%;
   max-width: 400px;
   height: 600px;
-  background: #000;
+  background: #111;
   border: 2px solid #333;
 }
 
@@ -51,6 +61,7 @@
   display: flex;
   width: 400px;
   max-width: 100%;
+  pointer-events: none;
 }
 
 .lane {
@@ -59,28 +70,49 @@
   margin: 0 2px;
   cursor: pointer;
   transition: all 0.1s ease;
+  pointer-events: auto;
 }
 
-.lane:nth-child(1) .hit-area { background: rgba(255, 0, 0, 0.3); }
-.lane:nth-child(2) .hit-area { background: rgba(0, 255, 0, 0.3); }
-.lane:nth-child(3) .hit-area { background: rgba(0, 0, 255, 0.3); }
-.lane:nth-child(4) .hit-area { background: rgba(255, 255, 0, 0.3); }
+.lane:nth-child(1) .hit-area { 
+  background: rgba(255, 0, 0, 0.2);
+  border-color: #ff4444;
+}
+.lane:nth-child(2) .hit-area { 
+  background: rgba(0, 255, 0, 0.2);
+  border-color: #44ff44;
+}
+.lane:nth-child(3) .hit-area { 
+  background: rgba(0, 0, 255, 0.2);
+  border-color: #4444ff;
+}
+.lane:nth-child(4) .hit-area { 
+  background: rgba(255, 255, 0, 0.2);
+  border-color: #ffff44;
+}
 
 .hit-area {
   width: 100%;
   height: 100%;
-  border: 2px solid white;
+  border: 3px solid;
   border-radius: 5px;
+  transition: all 0.05s ease;
 }
 
 .lane:active .hit-area {
   transform: scale(0.95);
   filter: brightness(1.5);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .game-instructions {
-  padding: 20px;
+  padding: 15px;
   text-align: center;
   background: #2a2a2a;
   color: #ccc;
+  font-size: 14px;
+  border-top: 1px solid #444;
+}
+
+.game-instructions p {
+  margin: 5px 0;
 }
