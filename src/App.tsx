@@ -22,7 +22,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme */
 import './theme/variables.css';
-import './theme/global.css'; // Import global styles
+import './theme/global.css';
 import Loading from './components/MusicsProps/Loading';
 import Menu from './components/Menu';
 import { BackgroundProvider } from './contexts/BackgroundContext';
@@ -40,18 +40,16 @@ const App: React.FC = () => {
     <IonApp>
       <BackgroundProvider>
         <IonReactRouter>
-          {/* Menu component - contentId matches router outlet */}
           <Menu contentId="main" />
           
           {/* Main content outlet */}
           <IonRouterOutlet id="main">
             <Suspense fallback={<Loading />}>
-              {/* Specific routes first - ORDER MATTERS! */}
-              <Route exact path="/settings" component={Settings} />
-              <Route exact path="/games" component={Games} />
-              <Route exact path="/music" component={UserMusics} />
-              <Route exact path="/home" component={Home} />
               <Route exact path="/" component={Home} />
+              <Route exact path="/home" component={Home} />
+              <Route exact path="/music" component={UserMusics} />
+              <Route exact path="/games" component={Games} />
+              <Route exact path="/settings" component={Settings} />
             </Suspense>
           </IonRouterOutlet>
         </IonReactRouter>

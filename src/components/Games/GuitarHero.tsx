@@ -53,11 +53,11 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
   const [missedCount, setMissedCount] = useState(0);
   const [keyPressed, setKeyPressed] = useState<Set<number>>(new Set());
   const [pressedLanes, setPressedLanes] = useState<Set<number>>(new Set());
+  const [startTime, setStartTime] = useState<number | null>(null);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const animationRef = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const lastTimeRef = useRef<number>(0);
   const effectIdRef = useRef<number>(0);
   const holdCheckRef = useRef<number | null>(null);
   const lastHitTimeRef = useRef<{ [key: number]: number }>({});
@@ -74,7 +74,7 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-      if (key in keyMap) {
+      if (key in keyMap && isPlaying) {
         e.preventDefault();
         const lane = keyMap[key];
         setKeyPressed(prev => new Set(prev).add(lane));
@@ -85,7 +85,7 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     
     const handleKeyUp = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
-      if (key in keyMap) {
+      if (key in keyMap && isPlaying) {
         e.preventDefault();
         const lane = keyMap[key];
         setKeyPressed(prev => {
@@ -176,8 +176,11 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     const bpm = 120;
     const beatDuration = 60 / bpm;
     
-    for (let time = 0; time < songDuration; time += beatDuration) {
-      const beat = Math.floor(time / beatDuration);
+    // Add 5 seconds delay to all notes
+    const startDelay = 5;
+    
+    for (let time = startDelay; time < songDuration + startDelay; time += beatDuration) {
+      const beat = Math.floor((time - startDelay) / beatDuration);
       
       // Add patterns of notes
       if (beat % 2 === 0) {
@@ -251,7 +254,7 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
       }
     }
     
-    // Add practice notes after song
+    // Add practice notes after song (also with delay)
     for (let i = 0; i < 40; i++) {
       if (i % 4 === 0) {
         // Chords in practice
@@ -259,7 +262,7 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
           generatedNotes.push({
             id: generatedNotes.length,
             lane: j,
-            timestamp: songDuration + i * 0.5,
+            timestamp: songDuration + startDelay + i * 0.5,
             duration: 0,
             active: true,
             hit: false,
@@ -270,7 +273,7 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
         generatedNotes.push({
           id: generatedNotes.length,
           lane: Math.floor(Math.random() * 4),
-          timestamp: songDuration + i * 0.3,
+          timestamp: songDuration + startDelay + i * 0.3,
           duration: 0,
           active: true,
           hit: false,
@@ -283,7 +286,8 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     setNotes(generatedNotes);
     setHitCount(0);
     setMissedCount(0);
-    console.log(`Generated ${generatedNotes.length} notes for ${songDuration}s song`);
+    setStartTime(startDelay);
+    console.log(`Generated ${generatedNotes.length} notes for ${songDuration}s song with ${startDelay}s delay`);
   };
   
   useEffect(() => {
@@ -292,7 +296,6 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
         setGameStarted(true);
       }
       audioRef.current.play();
-      lastTimeRef.current = performance.now();
       animationRef.current = requestAnimationFrame(animate);
       
       // Start hold note checker
@@ -445,7 +448,20 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     ctx.fillText('D', canvas.width/8*5, hitZoneY - 15);
     ctx.fillText('F', canvas.width/8*7, hitZoneY - 15);
     
-    // Draw notes
+    // Draw "GET READY" message during first 5 seconds
+    if (time < 5) {
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = '#ffaa00';
+      ctx.fillStyle = '#ffaa00';
+      ctx.font = 'bold 36px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('GET READY!', canvas.width/2, canvas.height/2 - 50);
+      
+      ctx.font = 'bold 72px Arial';
+      ctx.fillText(`${Math.max(0, 5 - Math.floor(time))}`, canvas.width/2, canvas.height/2 + 50);
+    }
+    
+    // Draw notes (but only show ones that are within the visible range)
     const noteSpeed = 200;
     
     const visibleNotes = notes.filter(n => {
@@ -626,9 +642,8 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     if (!audioRef.current || !isPlaying) return;
     
     const currentTime = audioRef.current.currentTime;
-    const hitWindow = 0.25; // Increased window for easier hits
+    const hitWindow = 0.25;
     
-    // Find ALL notes in this lane that can be hit at this moment
     const notesToHit = notes.filter(n => 
       n.lane === lane && 
       n.active && 
@@ -638,13 +653,11 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     );
     
     if (notesToHit.length > 0) {
-      // Hit all eligible notes in this lane (for rapid consecutive notes)
       notesToHit.forEach(note => {
         if (note.duration === 0) {
-          // Tap note
           const timeDiff = Math.abs(note.timestamp - currentTime);
           const isPerfect = timeDiff < 0.12;
-          const points = isPerfect ? 150 : 75; // Slightly reduced but more forgiving
+          const points = isPerfect ? 150 : 75;
           
           setNotes(prev => prev.map(n => 
             n.id === note.id ? { ...n, hit: true, active: false } : n
@@ -659,7 +672,6 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
           lastHitTimeRef.current[lane] = currentTime;
           
         } else if (note.duration > 0 && !note.holding) {
-          // Start hold note
           setNotes(prev => prev.map(n => 
             n.id === note.id ? { ...n, holding: true } : n
           ));
