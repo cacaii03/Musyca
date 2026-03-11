@@ -49,7 +49,10 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     const [editingMusic, setEditingMusic] = useState<UserMusic | null>(null);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-
+    const [showDownloadAlert, setShowDownloadAlert] = useState(false);
+    const [downloadedMusic, setDownloadedMusic] = useState<string>('');
+    const [downloadError, setDownloadError] = useState<string>('');
+    
     // Player state
     const [centeredCard, setCenteredCard] = useState<string | null>(null);
     const [currentPlayingId, setCurrentPlayingId] = useState<string | null>(null);
@@ -73,13 +76,17 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     }, []);
 
     const loadMusic = async () => {
-      const music = await MusicStorage.getAllMusic();
-      setMusicItems(music);
-      setFilteredItems(music);
-
-      // Set first card as centered if available
-      if (music.length > 0 && !centeredCard) {
-        setCenteredCard(music[0].id);
+      try {
+        const music = await MusicStorage.getAllMusic();
+        setMusicItems(music);
+        setFilteredItems(music);
+        
+        // Set first card as centered if available
+        if (music.length > 0 && !centeredCard) {
+          setCenteredCard(music[0].id);
+        }
+      } catch (error) {
+        console.error('Error loading music:', error);
       }
     };
 
@@ -223,14 +230,11 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
         setShowEditModal(true);
       }
     };
+
     const handleUpdateMusic = async (id: string, title: string, artist: string, imageFile?: File | null) => {
       try {
-        // Use the dedicated method for updating with image
         await MusicStorage.updateMusicWithImage(id, title, artist, imageFile);
-
-        // Reload music to get updated data
         await loadMusic();
-
         console.log('Music updated successfully');
       } catch (error) {
         console.error('Error updating music:', error);
@@ -259,6 +263,20 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
         setDeleteTarget(null);
       }
       setShowDeleteAlert(false);
+    };
+
+    const handleDownloadMusic = async (music: UserMusic) => {
+      try {
+        await MusicStorage.downloadMusic(music);
+        setDownloadedMusic(music.title);
+        setDownloadError('');
+        setShowDownloadAlert(true);
+      } catch (error) {
+        console.error('Error downloading music:', error);
+        setDownloadedMusic(music.title);
+        setDownloadError('Failed to download. Please try again.');
+        setShowDownloadAlert(true);
+      }
     };
 
     const handlePlayPause = async (id: string) => {
@@ -336,7 +354,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
 
     const handleSearch = (query: string) => {
       setSearchText(query);
-
+      
       if (!query.trim()) {
         setFilteredItems(musicItems);
       } else {
@@ -345,11 +363,11 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
           item.artist?.toLowerCase().includes(query.toLowerCase())
         );
         setFilteredItems(filtered);
-
+        
         // If there's a match and no centered card or the centered card is not in filtered results
         if (filtered.length > 0) {
           const centeredStillExists = centeredCard && filtered.some(item => item.id === centeredCard);
-
+          
           if (!centeredStillExists) {
             // Center the first result
             handleCardClick(filtered[0].id);
@@ -440,14 +458,14 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
     };
 
     return (
-      <IonPage>
-        <SearchHeader
-          title="Musyca"
-          searchText={searchText}
+      <IonPage> 
+        <SearchHeader 
+          title="Musyca" 
+          searchText={searchText} 
           onSearch={handleSearch}
           resultCount={filteredItems.length}
         />
-
+        
         <IonContent fullscreen>
           <div
             className={`music-container ${isDragging ? 'grabbing' : ''}`}
@@ -473,6 +491,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
                     onPlayPause={() => handlePlayPause(item.id)}
                     onDelete={() => handleDeleteMusic(item.id)}
                     onEdit={() => handleEditMusic(item.id)}
+                    onDownload={() => handleDownloadMusic(item)}
                   />
                 </div>
               ))}
@@ -546,11 +565,11 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
           )}
 
           {filteredItems.length === 0 && (
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
               height: '200px',
               textAlign: 'center',
               padding: '20px'
@@ -581,6 +600,7 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
             onSave={handleUpdateMusic}
           />
 
+          {/* Delete Confirmation Alert */}
           <IonAlert
             isOpen={showDeleteAlert}
             onDidDismiss={() => setShowDeleteAlert(false)}
@@ -597,6 +617,15 @@ const UserMusics = forwardRef<MusicPlayerHandle, UserMusicsProps>(
                 handler: confirmDelete,
               },
             ]}
+          />
+
+          {/* Download Success/Error Alert */}
+          <IonAlert
+            isOpen={showDownloadAlert}
+            onDidDismiss={() => setShowDownloadAlert(false)}
+            header={downloadError ? 'Download Failed' : 'Download Complete'}
+            message={downloadError || `${downloadedMusic} has been downloaded successfully!`}
+            buttons={['OK']}
           />
         </IonContent>
       </IonPage>
