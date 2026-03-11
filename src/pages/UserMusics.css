@@ -67,3 +67,40 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 20;
 }
+ion-toolbar:last-child {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+ion-searchbar {
+  --background: rgba(0, 0, 0, 0.3) !important;
+  --color: white !important;
+  --placeholder-color: rgba(255, 255, 255, 0.6) !important;
+  --icon-color: #ffaa00 !important;
+  --clear-button-color: #ffaa00 !important;
+  --border-radius: 30px !important;
+  --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  max-width: 500px;
+  margin: 0 auto !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+ion-searchbar:hover {
+  --background: rgba(0, 0, 0, 0.4) !important;
+  border-color: rgba(255, 170, 0, 0.3);
+}
+
+ion-searchbar:focus-within {
+  --background: rgba(0, 0, 0, 0.5) !important;
+  border-color: #ffaa00;
+  box-shadow: 0 4px 20px rgba(255, 170, 0, 0.2) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  ion-searchbar {
+    max-width: 100%;
+  }
+}
