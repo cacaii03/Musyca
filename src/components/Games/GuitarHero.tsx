@@ -48,12 +48,44 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
   const [missLane, setMissLane] = useState(-1);
   const [hitCount, setHitCount] = useState(0);
   const [missedCount, setMissedCount] = useState(0);
+  const [keyPressed, setKeyPressed] = useState<number | null>(null);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const animationRef = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lastTimeRef = useRef<number>(0);
   const effectIdRef = useRef<number>(0);
+  
+  // Keyboard mapping: A=0, S=1, D=2, F=3
+  const keyMap: { [key: string]: number } = {
+    'a': 0,
+    's': 1,
+    'd': 2,
+    'f': 3,
+  };
+  
+  // Add keyboard event listeners
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      if (key in keyMap) {
+        e.preventDefault();
+        const lane = keyMap[key];
+        setKeyPressed(lane);
+        handleLaneClick(lane);
+        
+        setTimeout(() => {
+          setKeyPressed(null);
+        }, 100);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isPlaying, notes, score, combo, hitCount, missedCount]);
   
   useEffect(() => {
     if (music.audioData) {
@@ -248,10 +280,27 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     ctx.fillStyle = 'rgba(255, 170, 0, 0.2)';
     ctx.fillRect(0, hitZoneY - 5, canvas.width, 10);
     
-    // Draw click area indicator
+    // Draw click/key press area indicator with KEY LETTERS
     ctx.shadowBlur = 5;
     ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
     ctx.fillRect(0, hitZoneY - 30, canvas.width, 30);
+    
+    // Draw key letters on the clicker area
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ffaa00';
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('A', canvas.width/8, hitZoneY - 15);
+    ctx.fillText('S', canvas.width/8*3, hitZoneY - 15);
+    ctx.fillText('D', canvas.width/8*5, hitZoneY - 15);
+    ctx.fillText('F', canvas.width/8*7, hitZoneY - 15);
+    
+    // Highlight pressed key
+    if (keyPressed !== null) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.fillRect(keyPressed * (canvas.width / 4), hitZoneY - 30, canvas.width / 4, 30);
+    }
     
     // Draw notes
     const noteSpeed = 200;
@@ -578,7 +627,6 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
                 <span className="stat-value">{notes.filter(n => n.active).length}</span>
               </div>
             </div>
-            <p className="instruction-text">🎸 Click lanes when notes hit the line!</p>
           </div>
         </div>
       </IonContent>

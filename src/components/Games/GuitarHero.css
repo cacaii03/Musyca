@@ -164,7 +164,6 @@
   background: #1a1a1a;
   border-radius: 12px;
   padding: 12px 20px;
-  margin-bottom: 12px;
   border: 1px solid #444;
 }
 
@@ -204,15 +203,11 @@
   text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
 }
 
-.instruction-text {
-  text-align: center;
-  font-size: 14px;
-  color: #ffaa00;
-  margin: 0;
-  padding: 8px;
-  background: rgba(255, 170, 0, 0.1);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 170, 0, 0.2);
+/* Canvas drawing styles - these are handled in the component but we keep container styles */
+.canvas-key-letter {
+  font-size: 18px;
+  font-weight: bold;
+  fill: #ffaa00;
 }
 
 /* Responsive adjustments */
@@ -250,8 +245,23 @@
   .stat-value {
     font-size: 24px;
   }
-  
-  .instruction-text {
-    font-size: 12px;
-  }
+}
+
+/* Dark theme scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
