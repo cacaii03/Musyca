@@ -26,16 +26,15 @@ import {
   checkmarkCircle 
 } from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
+import backgroundsData from '../data/backgrounds.json';
 import './Settings.css';
 
-// Background options
-const backgroundOptions = [
-  { value: 'MBG1', label: 'Midnight Blue 1', color: '#1a2a3a' },
-  { value: 'MBG2', label: 'Forest Green 2', color: '#2a3a2a' },
-  { value: 'MBG3', label: 'Royal Purple 3', color: '#3a2a3a' },
-  { value: 'MBG4', label: 'Sunset Orange 4', color: '#3a2a2a' },
-  { value: 'MBG5', label: 'Ocean Teal 5', color: '#2a3a3a' },
-];
+interface Background {
+  id: string;
+  color: string;
+  gradient: string[];
+  description: string;
+}
 
 const Settings: React.FC = () => {
   const [volume, setVolume] = useState(80);
@@ -44,6 +43,9 @@ const Settings: React.FC = () => {
   const [showClearAlert, setShowClearAlert] = useState(false);
   const [musicCount, setMusicCount] = useState(0);
   const [saveStatus, setSaveStatus] = useState('');
+
+  // Background options from JSON
+  const backgroundOptions: Background[] = backgroundsData.backgrounds;
 
   // Load settings from localStorage on mount
   useEffect(() => {
@@ -56,11 +58,26 @@ const Settings: React.FC = () => {
     if (savedAutoSave) setAutoSave(savedAutoSave === 'true');
     
     loadMusicCount();
+
+    // Apply saved background on load
+    const savedBg = localStorage.getItem('settings_background');
+    if (savedBg) {
+      applyBackground(savedBg);
+    }
   }, []);
 
   const loadMusicCount = async () => {
     const music = await MusicStorage.getAllMusic();
     setMusicCount(music.length);
+  };
+
+  const applyBackground = (bgId: string) => {
+    const bg = backgroundOptions.find(b => b.id === bgId);
+    if (bg) {
+      document.documentElement.style.setProperty('--settings-bg', bg.color);
+      document.documentElement.style.setProperty('--settings-bg-start', bg.gradient[0]);
+      document.documentElement.style.setProperty('--settings-bg-end', bg.gradient[1]);
+    }
   };
 
   // Save settings to localStorage
@@ -69,12 +86,10 @@ const Settings: React.FC = () => {
     localStorage.setItem('settings_background', selectedBackground);
     localStorage.setItem('settings_autosave', autoSave.toString());
     
+    applyBackground(selectedBackground);
+    
     setSaveStatus('Settings saved!');
     setTimeout(() => setSaveStatus(''), 2000);
-    
-    // Apply background to root element
-    const bgColor = backgroundOptions.find(b => b.value === selectedBackground)?.color || '#1a2a3a';
-    document.documentElement.style.setProperty('--settings-bg', bgColor);
   };
 
   // Clear all music
@@ -95,8 +110,14 @@ const Settings: React.FC = () => {
 
   // Get background preview color
   const getBgPreview = () => {
-    const option = backgroundOptions.find(b => b.value === selectedBackground);
+    const option = backgroundOptions.find(b => b.id === selectedBackground);
     return option ? option.color : '#1a2a3a';
+  };
+
+  // Get background description
+  const getBgDescription = () => {
+    const option = backgroundOptions.find(b => b.id === selectedBackground);
+    return option ? option.description : '';
   };
 
   return (
@@ -199,7 +220,7 @@ const Settings: React.FC = () => {
               <IonItem>
                 <IonLabel>
                   <h3>Select Background</h3>
-                  <p>Choose your preferred theme</p>
+                  <p>{getBgDescription()}</p>
                 </IonLabel>
                 <IonSelect
                   value={selectedBackground}
@@ -208,8 +229,8 @@ const Settings: React.FC = () => {
                   className="background-select"
                 >
                   {backgroundOptions.map(option => (
-                    <IonSelectOption key={option.value} value={option.value}>
-                      {option.label}
+                    <IonSelectOption key={option.id} value={option.id}>
+                      {option.id}
                     </IonSelectOption>
                   ))}
                 </IonSelect>
@@ -219,19 +240,23 @@ const Settings: React.FC = () => {
               <div className="background-preview">
                 <div 
                   className="preview-box" 
-                  style={{ backgroundColor: getBgPreview() }}
+                  style={{ 
+                    background: `linear-gradient(135deg, ${getBgPreview()}, #0a1a2a)`
+                  }}
                 >
-                  <span>Preview</span>
+                  <span>{selectedBackground}</span>
                 </div>
                 <div className="preview-grid">
                   {backgroundOptions.map(option => (
                     <div 
-                      key={option.value}
-                      className={`preview-option ${selectedBackground === option.value ? 'selected' : ''}`}
-                      style={{ backgroundColor: option.color }}
-                      onClick={() => setSelectedBackground(option.value)}
+                      key={option.id}
+                      className={`preview-option ${selectedBackground === option.id ? 'selected' : ''}`}
+                      style={{ 
+                        background: `linear-gradient(135deg, ${option.color}, #0a1a2a)`
+                      }}
+                      onClick={() => setSelectedBackground(option.id)}
                     >
-                      {option.value}
+                      {option.id}
                     </div>
                   ))}
                 </div>

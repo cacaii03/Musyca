@@ -1,6 +1,9 @@
 .settings-content {
-  --background: var(--settings-bg, #1a2a3a);
-  background: linear-gradient(135deg, var(--settings-bg, #1a2a3a), #0a1a2a);
+  --background: var(--settings-bg-start, #1a2a3a);
+  background: linear-gradient(135deg, 
+    var(--settings-bg-start, #1a2a3a), 
+    var(--settings-bg-end, #0a1a2a)
+  );
 }
 
 .settings-container {
