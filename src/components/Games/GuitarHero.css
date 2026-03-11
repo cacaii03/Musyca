@@ -14,6 +14,7 @@
   background: #2a2a2a;
   font-size: 16px;
   font-weight: bold;
+  border-bottom: 2px solid #444;
 }
 
 .song-info {
@@ -22,18 +23,31 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 16px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  align-items: center;
 }
 
 .score {
   color: #4caf50;
-  flex: 1;
-  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .combo {
   color: #ff9800;
-  flex: 1;
-  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.max-combo {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 18px;
 }
 
 .game-canvas-container {
@@ -43,50 +57,58 @@
   align-items: center;
   position: relative;
   background: #000;
+  min-height: 500px;
+  padding: 10px 0;
 }
 
 .game-canvas {
+  display: block;
   width: 100%;
   max-width: 400px;
-  height: 600px;
+  height: auto;
+  aspect-ratio: 400/600;
   background: #111;
   border: 2px solid #333;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
 }
 
 .lane-indicators {
   position: absolute;
-  bottom: 20px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  width: 400px;
-  max-width: 100%;
+  width: 380px;
+  max-width: 90%;
   pointer-events: none;
+  gap: 4px;
 }
 
 .lane {
   flex: 1;
   height: 100px;
-  margin: 0 2px;
+  margin: 0;
   cursor: pointer;
   transition: all 0.1s ease;
   pointer-events: auto;
+  position: relative;
 }
 
 .lane:nth-child(1) .hit-area { 
-  background: rgba(255, 0, 0, 0.2);
+  background: rgba(255, 68, 68, 0.3);
   border-color: #ff4444;
 }
 .lane:nth-child(2) .hit-area { 
-  background: rgba(0, 255, 0, 0.2);
+  background: rgba(68, 255, 68, 0.3);
   border-color: #44ff44;
 }
 .lane:nth-child(3) .hit-area { 
-  background: rgba(0, 0, 255, 0.2);
+  background: rgba(68, 68, 255, 0.3);
   border-color: #4444ff;
 }
 .lane:nth-child(4) .hit-area { 
-  background: rgba(255, 255, 0, 0.2);
+  background: rgba(255, 255, 68, 0.3);
   border-color: #ffff44;
 }
 
@@ -94,25 +116,142 @@
   width: 100%;
   height: 100%;
   border: 3px solid;
-  border-radius: 5px;
-  transition: all 0.05s ease;
+  border-radius: 12px 12px 0 0;
+  transition: all 0.1s ease;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .lane:active .hit-area {
-  transform: scale(0.95);
-  filter: brightness(1.5);
-  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 20px white;
+}
+
+.hit-area.hit-flash {
+  animation: hitFlash 0.15s ease;
+}
+
+@keyframes hitFlash {
+  0% {
+    transform: scale(1);
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 30px white;
+  }
+  50% {
+    transform: scale(1.08);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 40px white;
+  }
+  100% {
+    transform: scale(1);
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  }
 }
 
 .game-instructions {
-  padding: 15px;
-  text-align: center;
+  padding: 15px 20px;
   background: #2a2a2a;
   color: #ccc;
-  font-size: 14px;
-  border-top: 1px solid #444;
+  border-top: 2px solid #444;
+  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.3);
 }
 
-.game-instructions p {
-  margin: 5px 0;
+.stats-panel {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin-bottom: 12px;
+  border: 1px solid #444;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 70px;
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #888;
+  letter-spacing: 1px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.stat-item.hits .stat-value {
+  color: #4caf50;
+  text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.stat-item.misses .stat-value {
+  color: #ff4444;
+  text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
+
+.stat-item.left .stat-value {
+  color: #ffaa00;
+  text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+}
+
+.instruction-text {
+  text-align: center;
+  font-size: 14px;
+  color: #ffaa00;
+  margin: 0;
+  padding: 8px;
+  background: rgba(255, 170, 0, 0.1);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 170, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .game-header {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .stats {
+    gap: 10px;
+  }
+  
+  .score, .combo, .max-combo {
+    font-size: 14px;
+  }
+  
+  .lane-indicators {
+    bottom: 20px;
+    width: 95%;
+  }
+  
+  .lane {
+    height: 80px;
+  }
+  
+  .stats-panel {
+    padding: 8px 15px;
+  }
+  
+  .stat-item {
+    min-width: 60px;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+  }
+  
+  .instruction-text {
+    font-size: 12px;
+  }
 }

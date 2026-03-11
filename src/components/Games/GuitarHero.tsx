@@ -23,46 +23,46 @@ interface Note {
   lane: number;
   timestamp: number;
   active: boolean;
+  hit: boolean;
+  missed: boolean;
+}
+
+interface HitEffect {
+  id: number;
+  lane: number;
+  perfect: boolean;
+  x: number;
   y: number;
+  active: boolean;
 }
 
 const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [score, setScore] = useState(0);
   const [combo, setCombo] = useState(0);
+  const [maxCombo, setMaxCombo] = useState(0);
   const [notes, setNotes] = useState<Note[]>([]);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [hitEffects, setHitEffects] = useState<HitEffect[]>([]);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [showMissText, setShowMissText] = useState(false);
+  const [missLane, setMissLane] = useState(-1);
+  const [hitCount, setHitCount] = useState(0);
+  const [missedCount, setMissedCount] = useState(0);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const animationRef = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const startTimeRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
-  
-  // Generate notes based on song length
-  useEffect(() => {
-    const generatedNotes: Note[] = [];
-    // Generate notes at different timestamps
-    for (let i = 0; i < 30; i++) {
-      generatedNotes.push({
-        id: i,
-        lane: Math.floor(Math.random() * 4),
-        timestamp: i * 2 + Math.random(), // Notes every 2-3 seconds
-        active: true,
-        y: 0,
-      });
-    }
-    // Sort by timestamp
-    generatedNotes.sort((a, b) => a.timestamp - b.timestamp);
-    setNotes(generatedNotes);
-  }, []);
+  const effectIdRef = useRef<number>(0);
   
   useEffect(() => {
     if (music.audioData) {
       audioRef.current = new Audio(music.audioData);
       
       audioRef.current.onloadedmetadata = () => {
-        console.log('Audio duration:', audioRef.current?.duration);
+        console.log('Audio loaded, duration:', audioRef.current?.duration);
+        generateRhythmNotes(audioRef.current?.duration || 180);
+        drawNotes(0);
       };
     }
     
@@ -77,11 +77,83 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     };
   }, [music]);
   
+  const generateRhythmNotes = (songDuration: number) => {
+    const generatedNotes: Note[] = [];
+    const bpm = 120;
+    const beatDuration = 60 / bpm;
+    
+    for (let time = 0; time < songDuration; time += beatDuration) {
+      const beat = Math.floor(time / beatDuration);
+      
+      generatedNotes.push({
+        id: generatedNotes.length,
+        lane: Math.floor(Math.random() * 4),
+        timestamp: time,
+        active: true,
+        hit: false,
+        missed: false,
+      });
+      
+      if (beat % 2 === 0) {
+        generatedNotes.push({
+          id: generatedNotes.length,
+          lane: Math.floor(Math.random() * 4),
+          timestamp: time + 0.2,
+          active: true,
+          hit: false,
+          missed: false,
+        });
+      }
+      
+      if (beat % 4 === 0) {
+        for (let i = 0; i < 2; i++) {
+          generatedNotes.push({
+            id: generatedNotes.length,
+            lane: (Math.floor(Math.random() * 4) + i) % 4,
+            timestamp: time,
+            active: true,
+            hit: false,
+            missed: false,
+          });
+        }
+      }
+      
+      if (beat % 3 === 0) {
+        generatedNotes.push({
+          id: generatedNotes.length,
+          lane: Math.floor(Math.random() * 4),
+          timestamp: time + 0.35,
+          active: true,
+          hit: false,
+          missed: false,
+        });
+      }
+    }
+    
+    for (let i = 0; i < 20; i++) {
+      generatedNotes.push({
+        id: generatedNotes.length,
+        lane: Math.floor(Math.random() * 4),
+        timestamp: songDuration + i * 0.5,
+        active: true,
+        hit: false,
+        missed: false,
+      });
+    }
+    
+    generatedNotes.sort((a, b) => a.timestamp - b.timestamp);
+    setNotes(generatedNotes);
+    setHitCount(0);
+    setMissedCount(0);
+    console.log(`Generated ${generatedNotes.length} notes for ${songDuration}s song`);
+  };
+  
   useEffect(() => {
     if (isPlaying && audioRef.current) {
-      // Start audio
+      if (!gameStarted) {
+        setGameStarted(true);
+      }
       audioRef.current.play();
-      startTimeRef.current = performance.now() / 1000 - currentTime;
       lastTimeRef.current = performance.now();
       animationRef.current = requestAnimationFrame(animate);
     } else if (audioRef.current) {
@@ -90,19 +162,41 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = null;
       }
+      if (audioRef.current) {
+        drawNotes(audioRef.current.currentTime);
+      }
     }
   }, [isPlaying]);
   
   const animate = () => {
-    if (!audioRef.current) return;
+    if (!audioRef.current) {
+      drawNotes(0);
+      animationRef.current = requestAnimationFrame(animate);
+      return;
+    }
     
-    // Update current time from audio
-    setCurrentTime(audioRef.current.currentTime);
+    const currentTime = audioRef.current.currentTime;
     
-    // Draw notes
-    drawNotes(audioRef.current.currentTime);
+    setNotes(prev => {
+      let missed = false;
+      const updated = prev.map(note => {
+        if (note.active && !note.hit && !note.missed && currentTime > note.timestamp + 0.3) {
+          missed = true;
+          setMissedCount(c => c + 1);
+          return { ...note, missed: true, active: false };
+        }
+        return note;
+      });
+      
+      if (missed) {
+        setCombo(0);
+      }
+      
+      return updated;
+    });
     
-    // Continue animation loop
+    drawNotes(currentTime);
+    
     animationRef.current = requestAnimationFrame(animate);
   };
   
@@ -113,78 +207,180 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Draw lane lines
-    ctx.strokeStyle = '#444';
+    ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
     for (let i = 1; i < 4; i++) {
       const x = i * (canvas.width / 4);
       ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, canvas.height);
-      ctx.strokeStyle = '#666';
+      ctx.strokeStyle = '#444';
       ctx.stroke();
     }
     
-    // Draw hit zone line at bottom
-    ctx.strokeStyle = '#ffaa00';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(0, canvas.height - 80);
-    ctx.lineTo(canvas.width, canvas.height - 80);
-    ctx.stroke();
+    // Draw lane labels
+    ctx.fillStyle = '#666';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('G', canvas.width/8, 40);
+    ctx.fillText('R', canvas.width/8*3, 40);
+    ctx.fillText('B', canvas.width/8*5, 40);
+    ctx.fillText('Y', canvas.width/8*7, 40);
     
-    // Draw notes
-    const noteSpeed = 150; // pixels per second
+    // Draw hit zone
     const hitZoneY = canvas.height - 80;
     
-    notes.forEach(note => {
-      if (!note.active) return;
-      
-      // Calculate time until note should be hit
-      const timeUntilHit = note.timestamp - time;
-      
-      // Only show notes that are within visible range (5 seconds before to 2 seconds after)
-      if (timeUntilHit < -2 || timeUntilHit > 5) return;
-      
-      // Calculate Y position: notes start from top and move down to hit zone
-      // When timeUntilHit = 5 (5 seconds before hit), y = 0 (top)
-      // When timeUntilHit = 0 (hit time), y = hitZoneY
-      const y = hitZoneY - (timeUntilHit * noteSpeed);
-      
-      // Set color based on lane
-      const colors = ['#ff4444', '#44ff44', '#4444ff', '#ffff44'];
-      ctx.fillStyle = colors[note.lane];
-      
-      // Draw note (rounded rectangle)
-      const x = note.lane * (canvas.width / 4) + 15;
-      const width = (canvas.width / 4) - 30;
-      const height = 20;
-      
-      // Add glow effect
-      ctx.shadowColor = colors[note.lane];
-      ctx.shadowBlur = Math.abs(timeUntilHit) < 0.5 ? 20 : 10;
-      
-      // Draw note
-      ctx.beginPath();
-      ctx.roundRect(x, y - height/2, width, height, 10);
-      ctx.fill();
-      
-      // Add highlight if near hit zone
-      if (Math.abs(timeUntilHit) < 0.3) {
-        ctx.shadowBlur = 30;
-        ctx.fillStyle = 'white';
-        ctx.fill();
-      }
+    ctx.shadowColor = '#ffaa00';
+    ctx.shadowBlur = 15;
+    ctx.strokeStyle = '#ffaa00';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(0, hitZoneY);
+    ctx.lineTo(canvas.width, hitZoneY);
+    ctx.stroke();
+    
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = 'rgba(255, 170, 0, 0.2)';
+    ctx.fillRect(0, hitZoneY - 5, canvas.width, 10);
+    
+    // Draw click area indicator
+    ctx.shadowBlur = 5;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.fillRect(0, hitZoneY - 30, canvas.width, 30);
+    
+    // Draw notes
+    const noteSpeed = 200;
+    
+    const visibleNotes = notes.filter(n => {
+      if (!n.active) return false;
+      const timeUntilHit = n.timestamp - time;
+      return timeUntilHit > -2 && timeUntilHit < 5;
     });
     
-    // Reset shadow
+    visibleNotes.forEach(note => {
+      const timeUntilHit = note.timestamp - time;
+      const y = hitZoneY - (timeUntilHit * noteSpeed);
+      
+      if (y < -50 || y > canvas.height + 50) return;
+      
+      const colors = ['#ff4444', '#44ff44', '#4444ff', '#ffff44'];
+      const laneColor = colors[note.lane];
+      
+      const x = note.lane * (canvas.width / 4) + 10;
+      const width = (canvas.width / 4) - 20;
+      const height = 25;
+      
+      const distanceToHit = Math.abs(y - hitZoneY);
+      if (distanceToHit < 40) {
+        ctx.shadowColor = laneColor;
+        ctx.shadowBlur = 20;
+      } else {
+        ctx.shadowColor = laneColor;
+        ctx.shadowBlur = 10;
+      }
+      
+      const gradient = ctx.createLinearGradient(x, y - height/2, x + width, y + height/2);
+      gradient.addColorStop(0, laneColor);
+      gradient.addColorStop(1, 'white');
+      ctx.fillStyle = gradient;
+      
+      ctx.beginPath();
+      ctx.roundRect(x, y - height/2, width, height, 12);
+      ctx.fill();
+      
+      if (distanceToHit < 30) {
+        ctx.shadowBlur = 30;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.fill();
+      }
+      
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 12px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('♪', x + width/2, y);
+    });
+    
+    // Draw hit effects
+    hitEffects.forEach(effect => {
+      if (!effect.active) return;
+      
+      const time = Date.now() / 200;
+      const ringSize = 30 + Math.sin(time) * 10;
+      
+      ctx.shadowBlur = 30;
+      ctx.shadowColor = effect.perfect ? '#ffd700' : '#ffaa00';
+      
+      ctx.strokeStyle = effect.perfect ? '#ffd700' : '#ffaa00';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(effect.x, effect.y, ringSize, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      ctx.fillStyle = effect.perfect ? 'rgba(255, 215, 0, 0.3)' : 'rgba(255, 170, 0, 0.3)';
+      ctx.beginPath();
+      ctx.arc(effect.x, effect.y, 25, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.shadowBlur = 20;
+      ctx.fillStyle = effect.perfect ? '#ffd700' : '#ffaa00';
+      ctx.font = effect.perfect ? 'bold 24px Arial' : 'bold 20px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      const bounceY = effect.y - 40 + Math.sin(time * 5) * 5;
+      ctx.fillText(effect.perfect ? 'PERFECT!' : 'HIT!', effect.x, bounceY);
+    });
+    
+    // Draw miss animation
+    if (showMissText && missLane >= 0) {
+      const x = missLane * (canvas.width / 4) + (canvas.width / 8);
+      const time = Date.now() / 100;
+      
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#ff4444';
+      ctx.fillStyle = '#ff4444';
+      ctx.font = 'bold 28px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      const bounceY = hitZoneY - 40 + Math.sin(time) * 10;
+      ctx.fillText('MISS!', x, bounceY);
+      
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.2)';
+      ctx.fillRect(missLane * (canvas.width / 4), hitZoneY - 25, canvas.width / 4, 50);
+    }
+    
+    // Draw combo with animation
+    if (combo > 1) {
+      const pulse = 1 + Math.sin(Date.now() / 200) * 0.1;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#ff9800';
+      ctx.fillStyle = '#ff9800';
+      ctx.font = `bold ${Math.floor(28 * pulse)}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.fillText(`${combo}x COMBO!`, canvas.width/2, 60);
+    }
+    
+    // Draw time and score
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Time: ${time.toFixed(1)}s / ${audioRef.current?.duration.toFixed(1) || '0'}s`, 10, 20);
+    
+    ctx.textAlign = 'right';
+    ctx.fillText(`Score: ${score}`, canvas.width - 10, 20);
+    
     ctx.shadowBlur = 0;
   };
   
-  // Helper function for rounded rectangles
   CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
     if (w < 2 * r) r = w / 2;
     if (h < 2 * r) r = h / 2;
@@ -201,51 +397,115 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
   };
   
   const handleLaneClick = (lane: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas || !audioRef.current) return;
+    if (!audioRef.current || !isPlaying) return;
     
-    const currentAudioTime = audioRef.current.currentTime;
-    const hitThreshold = 0.2; // 200ms window
+    const currentTime = audioRef.current.currentTime;
+    const hitWindow = 0.15;
+    const hitZoneY = canvasRef.current ? canvasRef.current.height - 80 : 0;
     
-    // Find notes in hit zone
-    const hitNote = notes.find(note => {
-      if (!note.active) return false;
+    const availableNotes = notes.filter(n => 
+      n.lane === lane && 
+      n.active && 
+      !n.hit && 
+      !n.missed &&
+      Math.abs(n.timestamp - currentTime) < 0.5
+    );
+    
+    if (availableNotes.length > 0) {
+      const closestNote = availableNotes.reduce((prev, curr) => 
+        Math.abs(curr.timestamp - currentTime) < Math.abs(prev.timestamp - currentTime) ? curr : prev
+      );
       
-      const timeDiff = Math.abs(note.timestamp - currentAudioTime);
-      return note.lane === lane && timeDiff < hitThreshold;
-    });
-    
-    if (hitNote) {
-      // Hit the note
+      const timeDiff = Math.abs(closestNote.timestamp - currentTime);
+      const isPerfect = timeDiff < hitWindow;
+      const points = isPerfect ? 200 : 100;
+      
       setNotes(prev => prev.map(n => 
-        n.id === hitNote.id ? { ...n, active: false } : n
+        n.id === closestNote.id ? { ...n, hit: true, active: false } : n
       ));
-      setScore(prev => prev + 100);
-      setCombo(prev => prev + 1);
       
-      // Visual feedback
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = 'white';
-        ctx.globalAlpha = 0.5;
-        ctx.fillRect(lane * (canvas.width / 4), canvas.height - 100, canvas.width / 4, 40);
-        ctx.globalAlpha = 1;
+      setScore(prev => prev + points);
+      setCombo(prev => prev + 1);
+      setHitCount(prev => prev + 1);
+      setMaxCombo(prev => Math.max(prev, combo + 1));
+      
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const x = lane * (canvas.width / 4) + (canvas.width / 8);
+        const newEffect: HitEffect = {
+          id: effectIdRef.current++,
+          lane,
+          perfect: isPerfect,
+          x,
+          y: hitZoneY,
+          active: true,
+        };
         
-        // Reset after 100ms
+        setHitEffects(prev => [...prev, newEffect]);
+        
         setTimeout(() => {
-          if (canvasRef.current) {
-            drawNotes(audioRef.current?.currentTime || 0);
-          }
-        }, 100);
+          setHitEffects(prev => prev.filter(e => e.id !== newEffect.id));
+        }, 500);
       }
+      
+      const laneElement = document.querySelector(`.lane:nth-child(${lane + 1}) .hit-area`);
+      if (laneElement) {
+        laneElement.classList.add('hit-flash');
+        setTimeout(() => {
+          laneElement.classList.remove('hit-flash');
+        }, 150);
+      }
+      
     } else {
-      // Miss
       setCombo(0);
+      setShowMissText(true);
+      setMissLane(lane);
+      
+      setTimeout(() => {
+        setShowMissText(false);
+        setMissLane(-1);
+      }, 300);
+      
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const x = lane * (canvas.width / 4) + (canvas.width / 8);
+        const missEffect: HitEffect = {
+          id: effectIdRef.current++,
+          lane,
+          perfect: false,
+          x,
+          y: hitZoneY,
+          active: true,
+        };
+        
+        setHitEffects(prev => [...prev, missEffect]);
+        
+        setTimeout(() => {
+          setHitEffects(prev => prev.filter(e => e.id !== missEffect.id));
+        }, 300);
+      }
     }
   };
   
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
+  };
+  
+  const resetGame = () => {
+    setIsPlaying(false);
+    setScore(0);
+    setCombo(0);
+    setMaxCombo(0);
+    setHitCount(0);
+    setMissedCount(0);
+    setHitEffects([]);
+    setShowMissText(false);
+    setMissLane(-1);
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      generateRhythmNotes(audioRef.current.duration || 180);
+      drawNotes(0);
+    }
   };
   
   return (
@@ -262,6 +522,9 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
             <IonButton onClick={handlePlayPause}>
               <IonIcon icon={isPlaying ? pause : play} />
             </IonButton>
+            <IonButton onClick={resetGame}>
+              Reset
+            </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
@@ -272,8 +535,11 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
             <div className="song-info">
               {music.title} {music.artist && `- ${music.artist}`}
             </div>
-            <div className="score">Score: {score}</div>
-            <div className="combo">Combo: {combo}x</div>
+            <div className="stats">
+              <span className="score">⭐ {score}</span>
+              <span className="combo">🔥 {combo}x</span>
+              <span className="max-combo">🏆 {maxCombo}x</span>
+            </div>
           </div>
           
           <div className="game-canvas-container">
@@ -298,8 +564,21 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
           </div>
           
           <div className="game-instructions">
-            <p>Click the colored lanes when notes reach the yellow line!</p>
-            <p>🎸 Perfect hit = 100 points | Miss = break combo</p>
+            <div className="stats-panel">
+              <div className="stat-item hits">
+                <span className="stat-label">HITS</span>
+                <span className="stat-value">{hitCount}</span>
+              </div>
+              <div className="stat-item misses">
+                <span className="stat-label">MISS</span>
+                <span className="stat-value">{missedCount}</span>
+              </div>
+              <div className="stat-item left">
+                <span className="stat-label">LEFT</span>
+                <span className="stat-value">{notes.filter(n => n.active).length}</span>
+              </div>
+            </div>
+            <p className="instruction-text">🎸 Click lanes when notes hit the line!</p>
           </div>
         </div>
       </IonContent>
@@ -307,7 +586,6 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
   );
 };
 
-// Add the roundRect method to CanvasRenderingContext2D
 declare global {
   interface CanvasRenderingContext2D {
     roundRect(x: number, y: number, w: number, h: number, r: number): CanvasRenderingContext2D;
