@@ -1,0 +1,131 @@
+/* Menu Toolbar */
+.menu-toolbar {
+  --background: #2c3e50 !important;  /* Dark blue-gray */
+  --color: white !important;
+  --border-width: 0 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.menu-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #fff, #ffaa00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Menu Content */
+.menu-content {
+  --background: #34495e !important;  /* Slightly lighter dark blue-gray */
+  background: linear-gradient(135deg, #34495e, #2c3e50) !important;
+}
+
+.menu-list {
+  background: transparent !important;
+  padding: 20px 10px !important;
+}
+
+.menu-item {
+  --background: transparent !important;
+  --color: white !important;
+  --border-radius: 12px !important;
+  --padding-start: 16px !important;
+  --padding-end: 16px !important;
+  --min-height: 56px !important;
+  margin: 8px 0 !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.menu-item:hover {
+  --background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateX(5px);
+}
+
+.menu-item.ion-activated {
+  --background: rgba(255, 170, 0, 0.2) !important;
+}
+
+.menu-icon {
+  font-size: 24px !important;
+  margin-right: 16px !important;
+  transition: transform 0.3s ease !important;
+}
+
+.menu-item:hover .menu-icon {
+  transform: scale(1.1);
+}
+
+/* Icon Colors */
+.home-icon {
+  color: #4ecdc4 !important;  /* Turquoise */
+}
+
+.music-icon {
+  color: #ffaa00 !important;  /* Gold */
+}
+
+.games-icon {
+  color: #ff6b6b !important;  /* Coral */
+}
+
+.settings-icon {
+  color: #9b59b6 !important;  /* Purple */
+}
+
+/* Menu Item Labels */
+.menu-item ion-label {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Active Route Styling */
+.menu-item.router-link-active {
+  --background: rgba(255, 170, 0, 0.15) !important;
+  border-left: 4px solid #ffaa00;
+}
+
+.menu-item.router-link-active .menu-icon {
+  color: #ffaa00 !important;
+}
+
+/* Menu Footer */
+.menu-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  padding: 10px;
+}
+
+.menu-footer span {
+  color: #ffaa00;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-title {
+    font-size: 20px;
+  }
+  
+  .menu-item {
+    --min-height: 48px !important;
+    margin: 4px 0 !important;
+  }
+  
+  .menu-icon {
+    font-size: 20px !important;
+  }
+  
+  .menu-item ion-label {
+    font-size: 14px !important;
+  }
+}

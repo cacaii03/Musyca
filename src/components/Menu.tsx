@@ -21,13 +21,13 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
   return (
     <IonMenu contentId={contentId} side="start" type="overlay">
       <IonHeader>
-        <IonToolbar color="primary">
-          <IonTitle>Musyca</IonTitle>
+        <IonToolbar className="menu-toolbar">
+          <IonTitle className="menu-title">MUSYCA</IonTitle>
         </IonToolbar>
       </IonHeader>
       
-      <IonContent>
-        <IonList>
+      <IonContent className="menu-content">
+        <IonList className="menu-list">
           <IonMenuToggle autoHide={false}>
             {/* Home Link */}
             <IonItem 
@@ -37,7 +37,7 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
               detail={false}
               className="menu-item"
             >
-              <IonIcon icon={home} slot="start" color="tertiary" />
+              <IonIcon icon={home} slot="start" className="menu-icon home-icon" />
               <IonLabel>Home</IonLabel>
             </IonItem>
             
@@ -49,7 +49,7 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
               detail={false}
               className="menu-item"
             >
-              <IonIcon icon={musicalNotes} slot="start" color="primary" />
+              <IonIcon icon={musicalNotes} slot="start" className="menu-icon music-icon" />
               <IonLabel>Music Player</IonLabel>
             </IonItem>
             
@@ -61,7 +61,7 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
               detail={false}
               className="menu-item"
             >
-              <IonIcon icon={gameController} slot="start" color="secondary" />
+              <IonIcon icon={gameController} slot="start" className="menu-icon games-icon" />
               <IonLabel>Games</IonLabel>
             </IonItem>
 
@@ -73,7 +73,7 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
               detail={false}
               className="menu-item"
             >
-              <IonIcon icon={settings} slot="start" color="medium" />
+              <IonIcon icon={settings} slot="start" className="menu-icon settings-icon" />
               <IonLabel>Settings</IonLabel>
             </IonItem>
           </IonMenuToggle>
