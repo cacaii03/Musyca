@@ -1,0 +1,70 @@
+.piano-kit {
+  padding: 20px;
+  background: #1a1a1a;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2a2a2a;
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #444;
+}
+
+.song-title {
+  color: #ffaa00;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.play-status {
+  color: #4caf50;
+  font-size: 14px;
+  background: #1a1a1a;
+  padding: 5px 15px;
+  border-radius: 20px;
+  border: 1px solid #444;
+}
+
+.piano-canvas {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  aspect-ratio: 700/400;
+  display: block;
+  margin: 0 auto;
+  background: #1a1a1a;
+  border: 3px solid #444;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.key-guide {
+  margin-top: 20px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  padding: 15px;
+  background: #2a2a2a;
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+
+.key-guide .note {
+  color: #ffaa00;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+@media (max-width: 480px) {
+  .piano-kit { padding: 10px; }
+  .player-bar { flex-direction: column; gap: 10px; }
+  .key-guide { font-size: 12px; }
+}
