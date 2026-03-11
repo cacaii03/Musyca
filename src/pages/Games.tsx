@@ -20,11 +20,13 @@ import {
 import { play, musicalNotes, gameController } from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
 import { UserMusic } from '../types/music.types';
+import GuitarHero from '../components/Games/GuitarHero';
 import './Games.css';
 
 const Games: React.FC = () => {
   const [musicItems, setMusicItems] = useState<UserMusic[]>([]);
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [selectedSong, setSelectedSong] = useState<UserMusic | null>(null);
 
   useEffect(() => {
     loadMusic();
@@ -36,10 +38,12 @@ const Games: React.FC = () => {
   };
 
   const playGuitarHero = (music: UserMusic) => {
-    console.log('Playing Guitar Hero with:', music.title);
-    // Navigate to guitar hero game with selected music
-    // For now, we'll just log it
+    setSelectedSong(music);
   };
+
+  if (selectedSong) {
+    return <GuitarHero music={selectedSong} onExit={() => setSelectedSong(null)} />;
+  }
 
   if (selectedGame === 'guitarhero') {
     return (
@@ -54,40 +58,44 @@ const Games: React.FC = () => {
                 Back to Games
               </IonButton>
             </IonButtons>
-            <IonTitle>Guitar Hero</IonTitle>
+            <IonTitle>Select a Song</IonTitle>
           </IonToolbar>
         </IonHeader>
         <IonContent>
           <div style={{ padding: '20px' }}>
-            <h2>Select a song to play:</h2>
-            <IonGrid>
-              <IonRow>
-                {musicItems.map((music) => (
-                  <IonCol size="12" sizeMd="6" key={music.id}>
-                    <IonCard button onClick={() => playGuitarHero(music)}>
-                      <div
-                        style={{
-                          height: '100px',
-                          backgroundImage: music.imageData ? `url(${music.imageData})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                        }}
-                      />
-                      <IonCardHeader>
-                        <IonCardTitle>{music.title}</IonCardTitle>
-                        {music.artist && <p>{music.artist}</p>}
-                      </IonCardHeader>
-                      <IonCardContent>
-                        <IonButton expand="block">
-                          <IonIcon icon={play} slot="start" />
-                          Play
-                        </IonButton>
-                      </IonCardContent>
-                    </IonCard>
-                  </IonCol>
-                ))}
-              </IonRow>
-            </IonGrid>
+            <h2>Choose a song to play Guitar Hero:</h2>
+            {musicItems.length === 0 ? (
+              <p>No songs available. Add some music first!</p>
+            ) : (
+              <IonGrid>
+                <IonRow>
+                  {musicItems.map((music) => (
+                    <IonCol size="12" sizeMd="6" key={music.id}>
+                      <IonCard button onClick={() => playGuitarHero(music)}>
+                        <div
+                          style={{
+                            height: '100px',
+                            backgroundImage: music.imageData ? `url(${music.imageData})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                          }}
+                        />
+                        <IonCardHeader>
+                          <IonCardTitle>{music.title}</IonCardTitle>
+                          {music.artist && <p>{music.artist}</p>}
+                        </IonCardHeader>
+                        <IonCardContent>
+                          <IonButton expand="block">
+                            <IonIcon icon={play} slot="start" />
+                            Play
+                          </IonButton>
+                        </IonCardContent>
+                      </IonCard>
+                    </IonCol>
+                  ))}
+                </IonRow>
+              </IonGrid>
+            )}
           </div>
         </IonContent>
       </IonPage>
