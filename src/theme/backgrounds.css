@@ -1,0 +1,25 @@
+/* Background GIFs - for src/assets folder */
+.bg-MBG1 {
+  background: url('/src/assets/backgrounds/MBG1.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.bg-MBG2 {
+  background: url('/src/assets/backgrounds/MBG2.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.bg-MBG3 {
+  background: url('/src/assets/backgrounds/MBG3.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.bg-MBG4 {
+  background: url('/src/assets/backgrounds/MBG4.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.bg-MBG5 {
+  background: url('/src/assets/backgrounds/MBG5.gif') no-repeat center center fixed;
+  background-size: cover;
+}
