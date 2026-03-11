@@ -30,6 +30,20 @@ import { useBackground } from '../contexts/BackgroundContext';
 import backgroundsData from '../data/backgrounds.json';
 import './Settings.css';
 
+// Import background images directly
+import bg1 from '../assets/backgrounds/MBG1.gif';
+import bg2 from '../assets/backgrounds/MBG2.gif';
+import bg3 from '../assets/backgrounds/MBG3.gif';
+import bg4 from '../assets/backgrounds/MBG4.gif';
+import bg5 from '../assets/backgrounds/MBG5.gif';
+
+// Import thumbnails (or use the same GIFs if thumbnails don't exist)
+import thumb1 from '../assets/backgrounds/MBG1.gif';
+import thumb2 from '../assets/backgrounds/MBG2.gif';
+import thumb3 from '../assets/backgrounds/MBG3.gif';
+import thumb4 from '../assets/backgrounds/MBG4.gif';
+import thumb5 from '../assets/backgrounds/MBG5.gif';
+
 interface Background {
   id: string;
   gif: string;
@@ -47,8 +61,39 @@ const Settings: React.FC = () => {
   
   const { setCurrentBackground } = useBackground();
 
-  // Background options from JSON
-  const backgroundOptions: Background[] = backgroundsData.backgrounds;
+  // Map imported images to background options
+  const backgroundOptions: Background[] = [
+    {
+      id: 'MBG1',
+      gif: bg1,
+      thumbnail: thumb1,
+      description: 'Dynamic blue waves - Default theme'
+    },
+    {
+      id: 'MBG2',
+      gif: bg2,
+      thumbnail: thumb2,
+      description: 'Calming green forest animation'
+    },
+    {
+      id: 'MBG3',
+      gif: bg3,
+      thumbnail: thumb3,
+      description: 'Elegant purple nebula'
+    },
+    {
+      id: 'MBG4',
+      gif: bg4,
+      thumbnail: thumb4,
+      description: 'Warm sunset glow animation'
+    },
+    {
+      id: 'MBG5',
+      gif: bg5,
+      thumbnail: thumb5,
+      description: 'Fresh ocean waves'
+    },
+  ];
 
   // Load settings from localStorage on mount
   useEffect(() => {
@@ -202,7 +247,11 @@ const Settings: React.FC = () => {
                 >
                   <div 
                     className="background-preview"
-                    style={{ backgroundImage: `url(${option.thumbnail})` }}
+                    style={{ 
+                      backgroundImage: `url(${option.thumbnail})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }}
                   >
                     <div className="preview-overlay">
                       <span className="preview-id">{option.id}</span>
