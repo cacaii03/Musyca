@@ -27,12 +27,10 @@ import Menu from './components/Menu';
 
 setupIonicReact();
 
-// Lazy load your pages
 const UserMusics = lazy(() => import('./pages/UserMusics'));
+const Games = lazy(() => import('./pages/Games'));
 
 const App: React.FC = () => {
-  console.log('App rendering with Menu'); // Debug log
-  
   return (
     <IonApp>
       <IonReactRouter>
@@ -42,6 +40,7 @@ const App: React.FC = () => {
           <Suspense fallback={<Loading />}>
             <Route exact path="/" component={UserMusics} />
             <Route exact path="/music" component={UserMusics} />
+            <Route exact path="/games" component={Games} />
           </Suspense>
         </IonRouterOutlet>
       </IonReactRouter>

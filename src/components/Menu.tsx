@@ -11,7 +11,7 @@ import {
   IonLabel,
   IonMenuToggle,
 } from '@ionic/react';
-import { musicalNotes, gameController } from 'ionicons/icons'; // Add gameController icon
+import { musicalNotes, gameController } from 'ionicons/icons';
 
 interface MenuProps {
   contentId: string;
