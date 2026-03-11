@@ -11,7 +11,6 @@ interface BackgroundContextType {
   currentBackground: string;
   setCurrentBackground: (bg: string) => void;
   backgroundImage: string;
-  backgrounds: { id: string; gif: string; description: string }[];
 }
 
 const BackgroundContext = createContext<BackgroundContextType | undefined>(undefined);
@@ -27,40 +26,52 @@ export const useBackground = () => {
 export const BackgroundProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentBackground, setCurrentBackground] = useState('MBG1');
   const [backgroundImage, setBackgroundImage] = useState(bg1);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const backgrounds = [
-    { id: 'MBG1', gif: bg1, description: 'Dynamic blue waves - Default theme' },
-    { id: 'MBG2', gif: bg2, description: 'Calming green forest animation' },
-    { id: 'MBG3', gif: bg3, description: 'Elegant purple nebula' },
-    { id: 'MBG4', gif: bg4, description: 'Warm sunset glow animation' },
-    { id: 'MBG5', gif: bg5, description: 'Fresh ocean waves' },
+    { id: 'MBG1', gif: bg1 },
+    { id: 'MBG2', gif: bg2 },
+    { id: 'MBG3', gif: bg3 },
+    { id: 'MBG4', gif: bg4 },
+    { id: 'MBG5', gif: bg5 },
   ];
 
+  // Load saved background from localStorage on mount - run only once
   useEffect(() => {
-    // Load saved background from localStorage
+    console.log('Loading background from localStorage...');
     const savedBg = localStorage.getItem('settings_background');
+    console.log('Saved background:', savedBg);
+    
     if (savedBg) {
       setCurrentBackground(savedBg);
       const bg = backgrounds.find(b => b.id === savedBg);
-      if (bg) setBackgroundImage(bg.gif);
+      if (bg) {
+        setBackgroundImage(bg.gif);
+        console.log('Set background to:', savedBg);
+      }
     }
+    setIsLoaded(true);
   }, []);
 
+  // Update background when current changes and save to localStorage
   useEffect(() => {
-    // Update background when current changes
-    const bg = backgrounds.find(b => b.id === currentBackground);
-    if (bg) setBackgroundImage(bg.gif);
+    // Only run after initial load to prevent overwriting
+    if (!isLoaded) return;
     
-    // Save to localStorage
-    localStorage.setItem('settings_background', currentBackground);
-  }, [currentBackground]);
+    console.log('Background changed to:', currentBackground);
+    const bg = backgrounds.find(b => b.id === currentBackground);
+    if (bg) {
+      setBackgroundImage(bg.gif);
+      localStorage.setItem('settings_background', currentBackground);
+      console.log('Saved to localStorage:', currentBackground);
+    }
+  }, [currentBackground, isLoaded]);
 
   return (
     <BackgroundContext.Provider value={{ 
       currentBackground, 
       setCurrentBackground, 
-      backgroundImage,
-      backgrounds 
+      backgroundImage 
     }}>
       {/* Fixed background div */}
       <div style={{ 
@@ -84,7 +95,7 @@ export const BackgroundProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         zIndex: -1,
         pointerEvents: 'none'
       }} />

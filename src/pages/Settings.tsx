@@ -114,17 +114,18 @@ const Settings: React.FC = () => {
   };
 
   // Save settings to localStorage
-  const saveSettings = () => {
-    localStorage.setItem('settings_volume', volume.toString());
-    localStorage.setItem('settings_background', selectedBackground);
-    localStorage.setItem('settings_autosave', autoSave.toString());
-    
-    // Update background globally
-    setCurrentBackground(selectedBackground);
-    
-    setSaveStatus('Settings saved!');
-    setTimeout(() => setSaveStatus(''), 2000);
-  };
+ // Save settings to localStorage
+const saveSettings = () => {
+  localStorage.setItem('settings_volume', volume.toString());
+  localStorage.setItem('settings_background', selectedBackground);
+  localStorage.setItem('settings_autosave', autoSave.toString());
+  
+  // Update background globally - THIS IS KEY
+  setCurrentBackground(selectedBackground);
+  
+  setSaveStatus('Settings saved!');
+  setTimeout(() => setSaveStatus(''), 2000);
+};
 
   // Clear all music
   const clearAllMusic = async () => {
