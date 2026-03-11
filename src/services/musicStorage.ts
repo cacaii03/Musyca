@@ -182,6 +182,90 @@ export const MusicStorage = {
     }
   },
 
+  // NEW: Download music file
+  async downloadMusic(music: UserMusic): Promise<void> {
+    try {
+      // Get the audio data if not already loaded
+      let audioData = music.audioData;
+      if (!audioData) {
+        const storedAudio = await audioStore.getItem<string>(music.id);
+        if (storedAudio) {
+          audioData = storedAudio;
+        }
+      }
+      
+      if (!audioData) {
+        throw new Error('Audio data not found');
+      }
+      
+      // Extract the base64 data and determine file type
+      const matches = audioData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      if (!matches || matches.length !== 3) {
+        throw new Error('Invalid audio data format');
+      }
+      
+      const mimeType = matches[1];
+      const base64Data = matches[2];
+      
+      // Convert base64 to blob
+      const byteCharacters = atob(base64Data);
+      const byteNumbers = new Array(byteCharacters.length);
+      
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: mimeType });
+      
+      // Determine file extension from mime type
+      let fileExtension = '.mp3';
+      if (mimeType.includes('audio/mpeg')) fileExtension = '.mp3';
+      else if (mimeType.includes('audio/wav')) fileExtension = '.wav';
+      else if (mimeType.includes('audio/ogg')) fileExtension = '.ogg';
+      else if (mimeType.includes('audio/m4a')) fileExtension = '.m4a';
+      else if (mimeType.includes('audio/aac')) fileExtension = '.aac';
+      else if (mimeType.includes('audio/flac')) fileExtension = '.flac';
+      
+      // Create filename
+      const fileName = `${music.title}${music.artist ? ` - ${music.artist}` : ''}${fileExtension}`;
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      
+      // Trigger download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      
+      console.log(`Downloaded: ${fileName}`);
+      
+    } catch (error) {
+      console.error('Error downloading music:', error);
+      throw error;
+    }
+  },
+
+  // Helper: Download by ID
+  async downloadMusicById(id: string): Promise<void> {
+    try {
+      const music = await this.getMusic(id);
+      if (!music) {
+        throw new Error('Music not found');
+      }
+      await this.downloadMusic(music);
+    } catch (error) {
+      console.error('Error downloading music by ID:', error);
+      throw error;
+    }
+  },
+
   fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -193,7 +277,15 @@ export const MusicStorage = {
 
   base64ToBlobUrl(base64: string, type: string): string {
     try {
-      const byteCharacters = atob(base64.split(',')[1]);
+      const matches = base64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+      if (!matches || matches.length !== 3) {
+        throw new Error('Invalid base64 data');
+      }
+      
+      const mimeType = matches[1] || type;
+      const base64Data = matches[2];
+      
+      const byteCharacters = atob(base64Data);
       const byteNumbers = new Array(byteCharacters.length);
       
       for (let i = 0; i < byteCharacters.length; i++) {
@@ -201,7 +293,7 @@ export const MusicStorage = {
       }
       
       const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type });
+      const blob = new Blob([byteArray], { type: mimeType });
       return URL.createObjectURL(blob);
     } catch (error) {
       console.error('Error converting base64 to blob:', error);
