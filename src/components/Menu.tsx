@@ -11,7 +11,7 @@ import {
   IonLabel,
   IonMenuToggle,
 } from '@ionic/react';
-import { musicalNotes, gameController } from 'ionicons/icons';
+import { home, musicalNotes, gameController } from 'ionicons/icons'; // Add home icon
 
 interface MenuProps {
   contentId: string;
@@ -29,11 +29,19 @@ const Menu: React.FC<MenuProps> = ({ contentId }) => {
       <IonContent>
         <IonList>
           <IonMenuToggle autoHide={false}>
+            {/* Home Link */}
+            <IonItem button routerLink="/home" routerDirection="root" detail={false}>
+              <IonIcon icon={home} slot="start" color="tertiary" />
+              <IonLabel>Home</IonLabel>
+            </IonItem>
+            
+            {/* Music Player Link */}
             <IonItem button routerLink="/music" routerDirection="root" detail={false}>
               <IonIcon icon={musicalNotes} slot="start" color="primary" />
               <IonLabel>Music Player</IonLabel>
             </IonItem>
             
+            {/* Games Link */}
             <IonItem button routerLink="/games" routerDirection="root" detail={false}>
               <IonIcon icon={gameController} slot="start" color="secondary" />
               <IonLabel>Games</IonLabel>
