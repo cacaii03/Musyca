@@ -771,7 +771,6 @@ const GuitarHero: React.FC<GuitarHeroProps> = ({ music, onExit }) => {
           </IonButtons>
         </IonToolbar>
       </IonHeader>
-      
       <IonContent>
         <div className="game-container">
           <div className="game-header">
