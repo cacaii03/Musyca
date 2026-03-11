@@ -17,11 +17,11 @@ import {
   IonRow,
   IonCol,
 } from '@ionic/react';
-import { play, musicalNotes, gameController} from 'ionicons/icons';
+import { play, musicalNotes, gameController } from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
 import { UserMusic } from '../types/music.types';
 import GuitarHero from '../components/Games/GuitarHero';
-import DrumHero from '../components/Games/DrumHero';
+import DrumKit from '../components/Games/Drumkit';
 import './Games.css';
 
 const Games: React.FC = () => {
@@ -43,7 +43,7 @@ const Games: React.FC = () => {
     setSelectedGame('guitarhero');
   };
 
-  const playDrumHero = (music: UserMusic) => {
+  const playDrumKit = (music: UserMusic) => {
     setSelectedSong(music);
     setSelectedGame('drums');
   };
@@ -58,9 +58,9 @@ const Games: React.FC = () => {
     return <GuitarHero music={selectedSong} onExit={handleExit} />;
   }
 
-  // If a song is selected for Drum Hero
+  // If a song is selected for Drum Kit
   if (selectedSong && selectedGame === 'drums') {
-    return <DrumHero music={selectedSong} onExit={handleExit} />;
+    return <DrumKit music={selectedSong} onExit={handleExit} />;
   }
 
   // If Guitar Hero is selected but no song yet
@@ -121,7 +121,7 @@ const Games: React.FC = () => {
     );
   }
 
-  // If Drum Hero is selected but no song yet
+  // If Drum Kit is selected but no song yet
   if (selectedGame === 'drums') {
     return (
       <IonPage>
@@ -140,7 +140,7 @@ const Games: React.FC = () => {
         </IonHeader>
         <IonContent>
           <div style={{ padding: '20px' }}>
-            <h2>Choose a song to play Drum Hero:</h2>
+            <h2>Choose a song to play along with:</h2>
             {musicItems.length === 0 ? (
               <p>No songs available. Add some music first!</p>
             ) : (
@@ -148,7 +148,7 @@ const Games: React.FC = () => {
                 <IonRow>
                   {musicItems.map((music) => (
                     <IonCol size="12" sizeMd="6" key={music.id}>
-                      <IonCard button onClick={() => playDrumHero(music)}>
+                      <IonCard button onClick={() => playDrumKit(music)}>
                         <div
                           style={{
                             height: '100px',
@@ -164,7 +164,7 @@ const Games: React.FC = () => {
                         <IonCardContent>
                           <IonButton expand="block" color="secondary">
                             <IonIcon icon={play} slot="start" />
-                            Play Drum Hero
+                            Play Along
                           </IonButton>
                         </IonCardContent>
                       </IonCard>
@@ -212,14 +212,14 @@ const Games: React.FC = () => {
             
             <IonCol size="12" sizeMd="6">
               <IonCard button onClick={() => setSelectedGame('drums')} className="game-card">
-                <div className="game-card-image drum-hero-bg">
+                <div className="game-card-image drum-kit-bg">
                   <IonIcon icon={gameController} className="game-icon" />
                 </div>
                 <IonCardHeader>
-                  <IonCardTitle>Drum Hero</IonCardTitle>
+                  <IonCardTitle>Drum Kit</IonCardTitle>
                 </IonCardHeader>
                 <IonCardContent>
-                  Play the drums! Hit the glowing drums when they light up.
+                  Professional drum kit. Click or use keys (Q,W,E,R,T,Y,A,S,D) to play along with your music.
                 </IonCardContent>
               </IonCard>
             </IonCol>
