@@ -43,21 +43,12 @@ const App: React.FC = () => {
         {/* Main content outlet */}
         <IonRouterOutlet id="main">
           <Suspense fallback={<Loading />}>
-            {/* Home route */}
-            <Route exact path="/" component={Home} />
-            <Route exact path="/home" component={Home} />
-            
-            {/* Music Player route */}
-            <Route exact path="/music" component={UserMusics} />
-            
-            {/* Games route */}
-            <Route exact path="/games" component={Games} />
-            
-            {/* Settings route */}
+            {/* Specific routes first - ORDER MATTERS! */}
             <Route exact path="/settings" component={Settings} />
-            
-            {/* Catch all - redirect to home */}
-            <Route exact path="*" render={() => <Home />} />
+            <Route exact path="/games" component={Games} />
+            <Route exact path="/music" component={UserMusics} />
+            <Route exact path="/home" component={Home} />
+            <Route exact path="/" component={Home} />
           </Suspense>
         </IonRouterOutlet>
       </IonReactRouter>
