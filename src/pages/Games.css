@@ -1,105 +1,35 @@
 .game-card {
-  transition: transform 0.3s ease;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  transition: transform 0.2s;
 }
 
 .game-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.game-card-image {
-  height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  position: relative;
-  overflow: hidden;
-  border-radius: 8px 8px 0 0;
-}
-
-.guitar-hero-bg {
-  background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
-}
-
-.drum-hero-bg {
-  background: linear-gradient(135deg, #4ecdc4 0%, #2c7a7b 100%);
-}
-
-.game-icon {
-  font-size: 80px;
-  color: white;
-  opacity: 0.9;
-}
-
-.coming-soon {
-  opacity: 0.7;
-  cursor: default;
-}
-
-.coming-soon .game-card-image {
-  filter: grayscale(80%);
-}
-
-.coming-soon-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-/* Song selection styles */
-.song-card {
-  margin: 10px;
-  transition: transform 0.2s ease;
-}
-
-.song-card:hover {
   transform: scale(1.02);
 }
 
-.song-image {
-  height: 120px;
-  background-size: cover;
-  background-position: center;
+.game-card-image {
   position: relative;
+  width: 100%;
 }
 
-.song-image::after {
-  content: '';
+.game-overlay {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  color: white;
+  padding: 20px;
 }
 
-.song-artist {
-  margin-top: 5px;
-  color: #666;
-  font-size: 14px;
+.game-overlay h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: bold;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-  .game-card-image {
-    height: 150px;
-  }
-  
-  .game-icon {
-    font-size: 60px;
-  }
+.game-card-content {
+  padding: 15px;
 }

@@ -17,12 +17,16 @@ import {
   IonRow,
   IonCol,
 } from '@ionic/react';
-import { play, musicalNotes, gameController } from 'ionicons/icons';
+import { play } from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
 import { UserMusic } from '../types/music.types';
 import GuitarHero from '../components/Games/GuitarHero';
 import DrumKit from '../components/Games/Drumkit';
 import './Games.css';
+
+// Import your PNG images
+import guitarImage from '../components/MusicsProps/guitar.png';
+import drumImage from '../components/MusicsProps/drum.png';
 
 const Games: React.FC = () => {
   const [musicItems, setMusicItems] = useState<UserMusic[]>([]);
@@ -198,12 +202,19 @@ const Games: React.FC = () => {
           <IonRow>
             <IonCol size="12" sizeMd="6">
               <IonCard button onClick={() => setSelectedGame('guitarhero')} className="game-card">
-                <div className="game-card-image guitar-hero-bg">
-                  <IonIcon icon={musicalNotes} className="game-icon" />
+                <div 
+                  className="game-card-image" 
+                  style={{ 
+                    backgroundImage: `url(${guitarImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    height: '200px'
+                  }}
+                >
+                  <div className="game-overlay">
+                    <h3>Guitar Hero</h3>
+                  </div>
                 </div>
-                <IonCardHeader>
-                  <IonCardTitle>Guitar Hero</IonCardTitle>
-                </IonCardHeader>
                 <IonCardContent>
                   Play along with your music! Press A,S,D,F when notes hit the line.
                 </IonCardContent>
@@ -212,12 +223,19 @@ const Games: React.FC = () => {
             
             <IonCol size="12" sizeMd="6">
               <IonCard button onClick={() => setSelectedGame('drums')} className="game-card">
-                <div className="game-card-image drum-kit-bg">
-                  <IonIcon icon={gameController} className="game-icon" />
+                <div 
+                  className="game-card-image" 
+                  style={{ 
+                    backgroundImage: `url(${drumImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    height: '200px'
+                  }}
+                >
+                  <div className="game-overlay">
+                    <h3>Drum Kit</h3>
+                  </div>
                 </div>
-                <IonCardHeader>
-                  <IonCardTitle>Drum Kit</IonCardTitle>
-                </IonCardHeader>
                 <IonCardContent>
                   Professional drum kit. Click or use keys (Q,W,E,R,T,Y,A,S,D) to play along with your music.
                 </IonCardContent>
