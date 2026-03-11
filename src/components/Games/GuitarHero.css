@@ -1,0 +1,86 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1a1a1a;
+  color: white;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  background: #2a2a2a;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.score {
+  color: #4caf50;
+}
+
+.combo {
+  color: #ff9800;
+}
+
+.time {
+  color: #2196f3;
+}
+
+.game-canvas-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.game-canvas {
+  width: 100%;
+  max-width: 400px;
+  height: 600px;
+  background: #000;
+  border: 2px solid #333;
+}
+
+.lane-indicators {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  width: 400px;
+  max-width: 100%;
+}
+
+.lane {
+  flex: 1;
+  height: 100px;
+  margin: 0 2px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.lane:nth-child(1) .hit-area { background: rgba(255, 0, 0, 0.3); }
+.lane:nth-child(2) .hit-area { background: rgba(0, 255, 0, 0.3); }
+.lane:nth-child(3) .hit-area { background: rgba(0, 0, 255, 0.3); }
+.lane:nth-child(4) .hit-area { background: rgba(255, 255, 0, 0.3); }
+
+.hit-area {
+  width: 100%;
+  height: 100%;
+  border: 2px solid white;
+  border-radius: 5px;
+}
+
+.lane:active .hit-area {
+  transform: scale(0.95);
+  filter: brightness(1.5);
+}
+
+.game-instructions {
+  padding: 20px;
+  text-align: center;
+  background: #2a2a2a;
+  color: #ccc;
+}
