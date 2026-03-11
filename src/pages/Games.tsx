@@ -21,7 +21,7 @@ import { play } from 'ionicons/icons';
 import { MusicStorage } from '../services/musicStorage';
 import { UserMusic } from '../types/music.types';
 import GuitarHero from '../components/Games/GuitarHero';
-import DrumKit from '../components/Games/Drumkit';
+import DrumKit from '../components/Games/DrumKit';
 import PianoKit from '../components/Games/PianoKit';
 import './Games.css';
 
